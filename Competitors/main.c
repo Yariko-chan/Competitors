@@ -7,13 +7,14 @@
 #include "main.h"
 #include "constants.h"
 #include "file.h"
+#include "users.h"
 
 int g_role = 0;
 
 int main(void) {
 	char choice = ' ';
 
-	init_auth_file();
+	init_accounts_file();
 
 	printf(WELCOME);
 	do {
@@ -38,7 +39,7 @@ void login(void) {
 	
 	printf("Enter login and password: \n");
 
-	// TODO: rewrite with no break-continue-while(true).
+	// TODO: rewrite with no break-continue-while(true)
 	// get existing login
 	do {
 		printf("%8s:", "Login");
@@ -48,7 +49,6 @@ void login(void) {
 			break;
 		}
 		else {
-			clean_scan();
 			if (!ask_confirm("No such user. Try again?"))
 				exit(EXIT_SUCCESS);
 		}
@@ -71,6 +71,42 @@ void login(void) {
 	// if user - admin, change role
 	if (STR_EQUALS == strcmp(user.login, ADM_LOGIN)) {
 		g_role = 1;
-	}	
+	}
+
+	main_menu();
 }
 
+void main_menu(void) {
+	char choice = ' ';
+	do {
+		print_main_menu();
+		clean_scan();
+		choice = getchar();
+		switch (choice) {
+		    case 'u': manage_users(); break;
+		    case 'q': {
+		    	printf("Exit\n");
+			    exit(EXIT_SUCCESS);
+			    break;
+		    }
+		default: printf("No such operation. Try again.\n"); break;
+		}
+	} while (choice != 'q');
+}
+
+void manage_users(void) {
+	char choice = ' ';
+	do {
+		print_manage_users_menu();
+		clean_scan();
+		choice = getchar();
+		switch (choice) {
+		case 'v': view_users_list();  break;
+		case 'a': add_new_user();  break;
+		case 'd': delete_user();  break;
+		case 'e': edit_user_pass(); break;
+		case 'q': break;
+		default: printf("No such operation. Try again.\n"); break;
+		}
+	} while (choice != 'q');
+}

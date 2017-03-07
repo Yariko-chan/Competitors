@@ -116,6 +116,7 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="output.c" />
     <ClCompile Include="search.c" />
+    <ClCompile Include="users.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
@@ -124,6 +125,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="output.h" />
     <ClInclude Include="search.h" />
+    <ClInclude Include="users.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

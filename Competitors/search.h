@@ -2,4 +2,5 @@
 
 #include "constants.h"
 
-int search(Account* a_list, int count, char* key_login);
+int get_account_index(const Account* a_list, const int count, const char* key_login);
+int search_account(const Account *a_list, const long count);

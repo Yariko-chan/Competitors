@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "file.h"
+#include "input.h"
 
 // skip all characters from input entered previously 
 // (they can be scanned instead of entered further)
@@ -20,10 +21,24 @@ bool ask_confirm(const char* str) {
 	do
 	{
 		printf("%s (y/n): ", str);
-		ans = getchar();
 		clean_scan();
+		ans = getchar();
 	} while (ans != YES_ANS && ans != NO_ANS);
 	if ('n' == ans)
 		return false;
 	return true;
+}
+
+Account input_user(void)
+{
+	Account new_user;
+
+	puts("Enter data for new user:");
+	clean_scan();
+	printf("   Login: ");
+	scanf_s("%s", new_user.login, LOGIN_LENGTH);
+	clean_scan();
+	printf("Password: ");
+	scanf_s("%s", new_user.passw, PASSWORD_LENGTH);
+	return new_user;
 }

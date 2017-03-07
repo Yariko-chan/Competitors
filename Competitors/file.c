@@ -13,7 +13,7 @@ const int SUCCESS = 0;
 
 // try to open file for apppend
 // creates file with init data if no file
-void init_auth_file(void) {
+void init_accounts_file(void) {
 
 	FILE* fp;
 	errno_t err = 0;
@@ -29,11 +29,11 @@ void init_auth_file(void) {
 		    err = fopen_s(&fp, AUTH_FILE_NAME, "ab");
 			/* if can't create file, throw error and exit */
 		    if (SUCCESS != err) {
-			    error(ERROR_FILE_CREATE, true);
+			    error(ERR_FILE_CREATE, true);
 		    }
 		}
 		else {
-			error(ERROR_FILE_OPEN, true);
+			error(ERR_FILE_OPEN, true);
 		}
 	}
 
@@ -41,13 +41,8 @@ void init_auth_file(void) {
 	fseek(fp, 0L, SEEK_END);
 	int length = ftell(fp);
 	if (0 == length) {
-		rewind(fp);
 		Account admin = {ADM_LOGIN, ADM_PASSW};
-		Account user1 = { "user1", "user" };
-		Account user2 = { "user2", "user" };
 		add_account(fp, &admin);
-		add_account(fp, &user1);
-		add_account(fp, &user2);
 	}
 
 	close_file(fp);
@@ -56,14 +51,14 @@ void init_auth_file(void) {
 void open_file(FILE** fp, const char* file_name, const char* mode) {
 	errno_t err = fopen_s(fp, file_name, mode);
 	if (SUCCESS != err) { /* if error opening file, exit program */
-		error(ERROR_FILE_OPEN, true);
+		error(ERR_FILE_OPEN, true);
 	}
 }
 
 void close_file(FILE* fp) {
 	errno_t err = fclose(fp);
 	if (SUCCESS != err) { /* if can't close, exit prigram */
-		error(ERROR_FILE_CLOSE, true);
+		error(ERR_FILE_CLOSE, true);
 	}
 }
 
@@ -73,7 +68,7 @@ void close_file(FILE* fp) {
 void error(const char* message, const _Bool critical) {
 	perror(message);
 	if (critical) {
-		fprintf(stderr, ERROR_EXIT_CONFIRM);
+		fprintf(stderr, ERR_EXIT_CONFIRM);
 		clean_scan();
 		getchar();
 		exit(EXIT_FAILURE);
@@ -92,16 +87,30 @@ void add_account(FILE* fp, const Account* acc) {
 	}
 }
 
+// rewrite accounts with new data
+void save_accounts_changes(Account * a_list, int count) {
+	FILE* fp;
+	size_t writed_count;
+
+	open_file(&fp, AUTH_FILE_NAME, "wb");
+	writed_count = fwrite(a_list, sizeof(Account), count, fp);
+	if (count == writed_count)
+		puts(MSG_SAVE_SUCCESS);
+	else error(ERR_FILE_WRITING, false);
+
+	close_file(fp);
+}
+
 /*
  * search user in file
  * if exists, return login
  * else return account with void passw
  */
-Account get_user(const char login[LOGIN_LENGTH]) {
+Account get_user(const char* login) {
 
 	// get list of all accounts
 	int count = 0;
-	Account* acc_list = get_acc_list(&count);
+	Account* acc_list = get_users_list(&count);
 	if (0 == count) { /* if list void throw error and exit */
 		errno = EINTR;
 		error("User list empty. ", true);
@@ -109,7 +118,7 @@ Account get_user(const char login[LOGIN_LENGTH]) {
 
 	// find account in list by login
 	// DO NOT free(acc_list) until found Account is need
-	int i = search(acc_list, count, login);
+	int i = get_account_index(acc_list, count, login);
 
 	Account res;
 	strcpy_s(res.login, LOGIN_LENGTH, login);
@@ -128,7 +137,7 @@ Account get_user(const char login[LOGIN_LENGTH]) {
  * returns pointer to list of accounts from file
  * allocates memory, need to free!
  */
-Account* get_acc_list(int* count) {
+Account* get_users_list(int* count) {
 	FILE* fp;
 	Account* a_list;
 	size_t readed = 0;
@@ -150,7 +159,7 @@ Account* get_acc_list(int* count) {
 		(long)count * sizeof(Account), sizeof(Account), count, fp);
 	if (readed != *count) {
 		errno = EILSEQ;
-		error(ERROR_FILE_CORRUPTED, false);
+		error(ERR_FILE_CORRUPTED, false);
 	}
 
 	close_file(fp);

@@ -5,13 +5,15 @@
 
 #include "constants.h"
 
- void init_auth_file(void);
+// TODO: make uniform naming:
+// either account or user
+ void init_accounts_file(void);
+ void add_account(FILE* fp, const Account* acc);
+ void save_accounts_changes(Account* a_list, int count);
 
- void add_account(FILE* fp, Account* acc);
+ Account* get_users_list(int* count);
+ Account get_user(const char* login);
 
- Account* get_acc_list(int* count);
- Account get_user(char* login);
-
- void open_file(FILE** fp, char* file_name, char* mode);
+ void open_file(FILE** fp, const char* file_name, const char* mode);
  void close_file(FILE* fp);
- void error(char* message, _Bool critical);
+ void error(const char* message, const _Bool critical);
