@@ -7,7 +7,7 @@
 #include "main.h"
 #include "constants.h"
 #include "file.h"
-#include "users.h"
+#include "accounts.h"
 
 int g_role = 0;
 
@@ -34,8 +34,8 @@ void login(void) {
 
 	// TODO: add some info about success login
 	char login[LOGIN_LENGTH];
-	char passw[PASSWORD_LENGTH];
-	Account user;
+	char correct_pass[PASSWORD_LENGTH];
+	char entered_pass[PASSWORD_LENGTH];
 	
 	printf("Enter login and password: \n");
 
@@ -44,12 +44,12 @@ void login(void) {
 	do {
 		printf("%8s:", "Login");
 		scanf_s("%s", login, LOGIN_LENGTH);
-		user = get_user(login);
-		if (strlen(user.passw) != 0) {
+		get_password(login, correct_pass);
+		if (strlen(correct_pass) != 0) {
 			break;
 		}
 		else {
-			if (!ask_confirm("No such user. Try again?"))
+			if (!ask_confirm("No such account. Try again?"))
 				exit(EXIT_SUCCESS);
 		}
 	} while (true);
@@ -57,8 +57,8 @@ void login(void) {
 	// get correct password
 	do {
 		printf("%8s:", "Password");
-		scanf_s("%s", passw, PASSWORD_LENGTH);
-		if (STR_EQUALS == strcmp(user.passw, passw)) {
+		scanf_s("%s", entered_pass, PASSWORD_LENGTH);
+		if (STR_EQUALS == strcmp(correct_pass, entered_pass)) {
 			break;
 		}
 		else {
@@ -68,8 +68,8 @@ void login(void) {
 		}
 	} while (true);
 
-	// if user - admin, change role
-	if (STR_EQUALS == strcmp(user.login, ADM_LOGIN)) {
+	// if account - admin, change role
+	if (STR_EQUALS == strcmp(login, ADM_LOGIN)) {
 		g_role = 1;
 	}
 
@@ -83,7 +83,7 @@ void main_menu(void) {
 		clean_scan();
 		choice = getchar();
 		switch (choice) {
-		    case 'u': manage_users(); break;
+		    case 'u': manage_accounts(); break;
 		    case 'q': {
 		    	printf("Exit\n");
 			    exit(EXIT_SUCCESS);
@@ -94,17 +94,17 @@ void main_menu(void) {
 	} while (choice != 'q');
 }
 
-void manage_users(void) {
+void manage_accounts(void) {
 	char choice = ' ';
 	do {
-		print_manage_users_menu();
+		print_manage_accounts_menu();
 		clean_scan();
 		choice = getchar();
 		switch (choice) {
-		case 'v': view_users_list();  break;
-		case 'a': add_new_user();  break;
-		case 'd': delete_user();  break;
-		case 'e': edit_user_pass(); break;
+		case 'v': view_accounts_list();  break;
+		case 'a': add_new_account();  break;
+		case 'd': delete_account();  break;
+		case 'e': edit_account_pass(); break;
 		case 'q': break;
 		default: printf("No such operation. Try again.\n"); break;
 		}

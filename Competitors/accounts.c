@@ -5,38 +5,37 @@
 #include "input.h"
 #include "file.h"
 #include "output.h"
-#include "users.h"
+#include "accounts.h"
 #include "search.h"
 
-void view_users_list(void) {
+void view_accounts_list(void) {
 	Account* a;
 	int count;
 
-	a = get_users_list(&count);
-	display_users_list(a, count);
+	a = get_accounts_list(&count);
+	display_accounts_list(a, count);
 
 	//free allocated array
 	free(a);
 }
 
 
-void add_new_user(void) {
+void add_new_account(void) {
 	FILE* fp;
 
-	Account new_user = input_user();
+	Account new_a = input_account();
 	open_file(&fp, AUTH_FILE_NAME, "ab");
-	add_account(fp, &new_user);
-
+	add_account(fp, &new_a);
 	close_file(fp);
 }
 
-void delete_user(void)
+void delete_account(void)
 {
 	Account * a_list;
 	int count;
 
 	puts("*DELETE ACCOUNT*");
-	a_list = get_users_list(&count);
+	a_list = get_accounts_list(&count);
 	int i = search_account(a_list, count);
 	
 	//if found
@@ -55,13 +54,13 @@ void delete_user(void)
 	free(a_list);
 }
 
-void edit_user_pass(void) {
+void edit_account_pass(void) {
 	Account * a_list;
 	char pass[PASSWORD_LENGTH];
 	int count;
 
 	puts("*CHANGE PASSWORD*");
-	a_list = get_users_list(&count);
+	a_list = get_accounts_list(&count);
 	int i = search_account(a_list, count);
 
 	//if found

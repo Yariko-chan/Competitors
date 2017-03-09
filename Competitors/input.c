@@ -29,16 +29,16 @@ bool ask_confirm(const char* str) {
 	return true;
 }
 
-Account input_user(void)
+Account input_account(void)
 {
-	Account new_user;
+	Account new_a;
 
-	puts("Enter data for new user:");
+	puts("Enter data for new account:");
 	clean_scan();
 	printf("   Login: ");
-	scanf_s("%s", new_user.login, LOGIN_LENGTH);
+	scanf_s("%s", new_a.login, LOGIN_LENGTH);
 	clean_scan();
 	printf("Password: ");
-	scanf_s("%s", new_user.passw, PASSWORD_LENGTH);
-	return new_user;
+	scanf_s("%s", new_a.passw, PASSWORD_LENGTH);
+	return new_a;
 }

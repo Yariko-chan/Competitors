@@ -6,4 +6,4 @@
 
 void clean_scan(void);
 bool ask_confirm(const char* str);
-Account input_user(void);
+Account input_account(void);

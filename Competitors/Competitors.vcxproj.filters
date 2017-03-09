@@ -30,7 +30,7 @@
     <ClCompile Include="search.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="users.c">
+    <ClCompile Include="accounts.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,7 +53,7 @@
     <ClInclude Include="search.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="users.h">
+    <ClInclude Include="accounts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

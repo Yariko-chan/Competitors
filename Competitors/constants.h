@@ -5,7 +5,7 @@
 #define LOGIN_LENGTH 10
 #define PASSWORD_LENGTH 10
 
-#define AUTH_FILE_NAME "users.co"
+#define AUTH_FILE_NAME "accounts.co"
 
 #define ERR_FILE_CREATE "Error occured while creating file. "
 #define ERR_FILE_OPEN "Error occured while opening file. "

@@ -23,7 +23,7 @@ void init_accounts_file(void) {
 	if (SUCCESS != err) { /* error opening file*/
 		/* recreate file by user confirmation */
 		if (ask_confirm("Error opening auth file. "
-			"Would you like to recreate file? All user data will be removed.")) {
+			"Would you like to recreate file? All accounts will be removed.")) {
 			fclose(fp);
 		    remove(AUTH_FILE_NAME);
 		    err = fopen_s(&fp, AUTH_FILE_NAME, "ab");
@@ -47,6 +47,88 @@ void init_accounts_file(void) {
 
 	close_file(fp);
 };
+
+void add_account(FILE* fp, const Account* acc) {
+	int writed_count = fwrite(acc, sizeof(Account), 1, fp);
+	if (1 == writed_count) {
+		puts("Account successfully added.");
+	}
+	else {
+		printf("Error occured, account [%s] wasn't saved", acc->login);
+	}
+}
+
+// rewrite accounts with new data
+void save_accounts_changes(Account * a_list, int count) {
+	FILE* fp;
+	size_t writed_count;
+
+	open_file(&fp, AUTH_FILE_NAME, "wb");
+	writed_count = fwrite(a_list, sizeof(Account), count, fp);
+	if (count == writed_count)
+		puts(MSG_SAVE_SUCCESS);
+	else error(ERR_FILE_WRITING, false);
+
+	close_file(fp);
+}
+
+/*
+ * search account in file
+ * if exists, save correct password to @pass
+ * else @pass = ""
+ */
+void get_password(const char* login, char* pass) {
+
+	// get list of all accounts
+	int count = 0;
+	Account* a_list = get_accounts_list(&count);
+	if (0 == count) { /* if list void throw error and exit */
+		errno = EINTR;
+		error("Accounts list empty. ", true);
+	}
+
+	// find account in list by login
+	// DO NOT free(a_list) until found Account is need
+	int i = get_account_index(a_list, count, login);
+
+	if (i > -1) { /* if account found, return pass */
+		strcpy_s(pass, PASSWORD_LENGTH, (a_list+i)->passw);
+	}
+	else { /* account not found, return void pass */
+		strcpy_s(pass, PASSWORD_LENGTH, "");
+	}
+	free(a_list);
+}
+
+/*
+ * returns pointer to list of accounts from file
+ * allocates memory, need to free!
+ */
+Account* get_accounts_list(int* count) {
+	FILE* fp;
+	Account* a_list;
+	size_t readed = 0;
+
+	open_file(&fp, AUTH_FILE_NAME, "rb");
+
+	// get count of contracts in file
+	fseek(fp, 0L, SEEK_END);
+	*count = ftell(fp) / sizeof(Account);
+	rewind(fp);
+
+	a_list = (Account*)calloc(count, sizeof(Account));
+	/* why. this. works? but not *count*/
+
+	readed = fread_s(a_list,
+		(long)count * sizeof(Account), sizeof(Account), count, fp);
+	if (readed != *count) {
+		errno = EILSEQ;
+		error(ERR_FILE_CORRUPTED, false);
+	}
+
+	close_file(fp);
+	return a_list;
+}
 
 void open_file(FILE** fp, const char* file_name, const char* mode) {
 	errno_t err = fopen_s(fp, file_name, mode);
@@ -73,95 +155,4 @@ void error(const char* message, const _Bool critical) {
 		getchar();
 		exit(EXIT_FAILURE);
 	}
-}
-
-// TODO: is this function good?
-// rewrite for other uses may be
-void add_account(FILE* fp, const Account* acc) {
-	int writed_count = fwrite(acc, sizeof(Account), 1, fp);
-	if (1 == writed_count) {
-		puts("Account successfully added.");
-	}
-	else {
-		printf("Error occured, account [%s] wasn't saved", acc->login);
-	}
-}
-
-// rewrite accounts with new data
-void save_accounts_changes(Account * a_list, int count) {
-	FILE* fp;
-	size_t writed_count;
-
-	open_file(&fp, AUTH_FILE_NAME, "wb");
-	writed_count = fwrite(a_list, sizeof(Account), count, fp);
-	if (count == writed_count)
-		puts(MSG_SAVE_SUCCESS);
-	else error(ERR_FILE_WRITING, false);
-
-	close_file(fp);
-}
-
-/*
- * search user in file
- * if exists, return login
- * else return account with void passw
- */
-Account get_user(const char* login) {
-
-	// get list of all accounts
-	int count = 0;
-	Account* acc_list = get_users_list(&count);
-	if (0 == count) { /* if list void throw error and exit */
-		errno = EINTR;
-		error("User list empty. ", true);
-	}
-
-	// find account in list by login
-	// DO NOT free(acc_list) until found Account is need
-	int i = get_account_index(acc_list, count, login);
-
-	Account res;
-	strcpy_s(res.login, LOGIN_LENGTH, login);
-	if (i > -1) { /* if account found, copy passw */
-		strcpy_s(res.passw, PASSWORD_LENGTH, (acc_list+i)->passw);
-	}
-	else { /* account not found, return void passw */
-		strcpy_s(res.passw, PASSWORD_LENGTH, "");
-	}
-	free(acc_list);
-
-	return res;
-}
-
-/*
- * returns pointer to list of accounts from file
- * allocates memory, need to free!
- */
-Account* get_users_list(int* count) {
-	FILE* fp;
-	Account* a_list;
-	size_t readed = 0;
-
-	open_file(&fp, AUTH_FILE_NAME, "rb");
-
-	// get count of contracts in file
-	fseek(fp, 0L, SEEK_END);
-	*count = ftell(fp) / sizeof(Account);
-	rewind(fp);
-
-	// TODO: is allocated memory size true? check @param count
-	// allocate memory for array
-	a_list = (Account*)calloc(count, sizeof(Account));
-
-	// TODO: check int param instead of size_t
-	// read array from file
-	readed = fread_s(a_list, 
-		(long)count * sizeof(Account), sizeof(Account), count, fp);
-	if (readed != *count) {
-		errno = EILSEQ;
-		error(ERR_FILE_CORRUPTED, false);
-	}
-
-	close_file(fp);
-	return a_list;
 }
