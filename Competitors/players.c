@@ -1,6 +1,8 @@
 #include "file.h"
 #include "constants.h"
 #include "input.h"
+#include "search.h"
+#include "output.h"
 
 void add_player(void) {
 	FILE * fp;
@@ -29,4 +31,35 @@ void view_players_list(void) {
 
 	//free allocated array
 	free(a);
+}
+
+void delete_player(void)
+{
+	Player * p_list;
+	int count;
+
+	puts("*DELETE PLAYER*");
+	p_list = get_players_list(&count);
+	if (NULL == p_list) {
+		// free(a_list);
+		// already free
+		puts("No player in list");
+		return;
+	}
+	int i = search_player(p_list, count);
+
+	//if found
+	if (-1 < i) {
+		if (ask_confirm("Do you want to delete this player from list?")) {
+			for (i; i < (count - 1); i++) {
+				// move all items in list after i to previous position
+				p_list[i] = p_list[i + 1];
+			}
+			count--;
+			save_players_changes(p_list, count);
+			puts("Player successfully deleted.");
+		}
+	}
+
+	free(p_list);
 }

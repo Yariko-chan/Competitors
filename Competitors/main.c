@@ -16,17 +16,19 @@ int main(void) {
 	char choice = ' ';
 
 	init_accounts_file();
+	init_players_file();
 
 	printf(WELCOME);
 	do {
 		print_auth_menu();
+		clean_stdin();
 		choice = getchar();
 		switch (choice) {
 		    case 'l': login(); break;
 		    case 'q': printf("Exit\n"); break;
 		    default: printf("No such operation. Try again.\n"); break;
 		}
-		clean_scan();
+		clean_stdin();
 	} while (choice != 'q');
 }
 
@@ -63,7 +65,7 @@ void login(void) {
 			break;
 		}
 		else {
-			clean_scan();
+			clean_stdin();
 			if (!ask_confirm("Incorrect password. Try again?")) 
 				exit(EXIT_SUCCESS);
 		}
@@ -81,11 +83,12 @@ void main_menu(void) {
 	char choice = ' ';
 	do {
 		print_main_menu();
-		clean_scan();
+		clean_stdin();
 		choice = getchar();
 		switch (choice) {
 		    case 'v': view_players_list(); break;
 		    case 'a': add_player(); break;
+			case 'd': delete_player(); break;
 		    case 'u': manage_accounts(); break;
 		    case 'q': {
 		    	printf("Exit\n");
@@ -101,7 +104,7 @@ void manage_accounts(void) {
 	char choice = ' ';
 	do {
 		print_manage_accounts_menu();
-		clean_scan();
+		clean_stdin();
 		choice = getchar();
 		switch (choice) {
 		case 'v': view_accounts_list();  break;

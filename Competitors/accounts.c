@@ -42,6 +42,11 @@ void delete_account(void)
 
 	puts("*DELETE ACCOUNT*");
 	a_list = get_accounts_list(&count);
+	if (NULL == a_list) {
+		// free(a_list);
+		// already free
+		return;
+	}
 	int i = search_account(a_list, count);
 	
 	//if found
@@ -67,6 +72,11 @@ void edit_account_pass(void) {
 
 	puts("*CHANGE PASSWORD*");
 	a_list = get_accounts_list(&count);
+	if (NULL == a_list) {
+		// free(a_list);
+		// already free
+		return;
+	}
 	int i = search_account(a_list, count);
 
 	//if found

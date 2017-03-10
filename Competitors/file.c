@@ -54,6 +54,35 @@ void init_accounts_file(void) {
 	close_file(fp);
 };
 
+// try to open file for apppend
+// creates void file if no file
+void init_players_file(void) {
+
+	FILE* fp;
+	errno_t err = 0;
+
+	// open file or create if no such file
+	err = fopen_s(&fp, PLAYERS_FILE_NAME, "ab");
+	if (SUCCESS != err) { /* error opening file*/
+						  /* recreate file by user confirmation */
+		if (ask_confirm("Error opening main file. "
+			"Would you like to recreate file? All players will be removed.")) {
+			fclose(fp);
+			remove(PLAYERS_FILE_NAME);
+			err = fopen_s(&fp, PLAYERS_FILE_NAME, "ab");
+			/* if can't create file, throw error and exit */
+			if (SUCCESS != err) {
+				error(ERR_FILE_CREATE, true);
+			}
+		}
+		else {
+			error(ERR_FILE_OPEN, true);
+		}
+	}
+
+	close_file(fp);
+};
+
 // rewrite accounts with new data
 void save_accounts_changes(Account * a_list, int count) {
 	FILE* fp;
@@ -61,6 +90,21 @@ void save_accounts_changes(Account * a_list, int count) {
 
 	open_file(&fp, ACCOUNTS_FILE_NAME, "wb");
 	writed_count = fwrite(a_list, sizeof(Account), count, fp);
+	if (count == writed_count)
+		puts(MSG_SAVE_SUCCESS);
+	else error(ERR_FILE_WRITING, false);
+
+	close_file(fp);
+}
+
+// rewrite players file with new data
+void save_players_changes(const Player * p_list, const int count) {
+	FILE* fp;
+	size_t writed_count;
+
+	open_file(&fp, PLAYERS_FILE_NAME, "wb");
+
+	writed_count = fwrite(p_list, sizeof(Player), count, fp);
 	if (count == writed_count)
 		puts(MSG_SAVE_SUCCESS);
 	else error(ERR_FILE_WRITING, false);
@@ -110,6 +154,10 @@ Account* get_accounts_list(int* count) {
 	// get count of contracts in file
 	fseek(fp, 0L, SEEK_END);
 	*count = ftell(fp) / sizeof(Account);
+	if (0 == *count) {
+		close_file(fp);
+		return NULL;
+	}
 	rewind(fp);
 
 	a_list = (Account*)calloc(*count, sizeof(Account));
@@ -137,16 +185,24 @@ Player* get_players_list(int* count) {
 
 	open_file(&fp, PLAYERS_FILE_NAME, "rb");
 
+	// TODO: save count in file before list
+	// use this for checking corectness of file
+
+	// TODO: save list in some sorted order
+
 	// get count of contracts in file
 	fseek(fp, 0L, SEEK_END);
 	*count = ftell(fp) / sizeof(Player);
+	if (0 == *count) {
+		close_file(fp);
+		return NULL;
+	}
 	rewind(fp);
 
-	p_list = (Player*)calloc(count, sizeof(Player));
-	/* why. this. works? but not *count*/
+	p_list = (Player*)calloc(*count, sizeof(Player));
 
 	readed = fread_s(p_list,
-		(long)count * sizeof(Player), sizeof(Player), count, fp);
+		(long)(*count) * sizeof(Player), sizeof(Player), (*count), fp);
 	if (readed != *count) {
 		errno = EILSEQ;
 		error(ERR_FILE_CORRUPTED, false);
@@ -177,7 +233,7 @@ void error(const char* message, const _Bool critical) {
 	perror(message);
 	if (critical) {
 		fprintf(stderr, ERR_EXIT_CONFIRM);
-		clean_scan();
+		clean_stdin();
 		getchar();
 		exit(EXIT_FAILURE);
 	}

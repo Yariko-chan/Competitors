@@ -4,7 +4,7 @@
 
 #include "constants.h"
 
-void clean_scan(void);
+void clean_stdin(void);
 bool ask_confirm(const char* str);
 
 Account input_account(void);

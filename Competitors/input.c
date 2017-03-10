@@ -7,11 +7,18 @@
 
 // skip all characters from input entered previously 
 // (they can be scanned instead of entered further)
-void clean_scan(void) {
+void clean_stdin(void) {
 	const char NEWLINE = '\n';
 
-	char ch = ' ';
-	while ((ch = getchar()) != NEWLINE);
+	fseek(stdin, 0, SEEK_END);
+	//if (!feof(stdin)) {
+	//	char ch = ' ';
+	//    while ((ch = getchar()) != NEWLINE  && ch != EOF);
+	//}
+	
+	//while (!feof(stdin)) {
+	//	getchar();
+	//}
 }
 
 // get confirmation (or not) for query in arguments
@@ -23,7 +30,7 @@ bool ask_confirm(const char* str) {
 	do
 	{
 		printf("%s (y/n): ", str);
-		clean_scan();
+		clean_stdin();
 		ans = getchar();
 	} while (ans != YES_ANS && ans != NO_ANS);
 	if ('n' == ans)
