@@ -10,8 +10,15 @@
 void clean_scan(void) {
 	const char NEWLINE = '\n';
 
-	char ch = ' ';
-	while ((ch = getchar()) != NEWLINE);
+	fseek(stdin, 0, SEEK_END);
+	//if (!feof(stdin)) {
+	//	char ch = ' ';
+	//    while ((ch = getchar()) != NEWLINE  && ch != EOF);
+	//}
+	
+	//while (!feof(stdin)) {
+	//	getchar();
+	//}
 }
 
 // get confirmation (or not) for query in arguments

@@ -16,10 +16,12 @@ int main(void) {
 	char choice = ' ';
 
 	init_accounts_file();
+	init_players_file();
 
 	printf(WELCOME);
 	do {
 		print_auth_menu();
+		clean_scan();
 		choice = getchar();
 		switch (choice) {
 		    case 'l': login(); break;
@@ -86,6 +88,7 @@ void main_menu(void) {
 		switch (choice) {
 		    case 'v': view_players_list(); break;
 		    case 'a': add_player(); break;
+			case 'd': delete_player(); break;
 		    case 'u': manage_accounts(); break;
 		    case 'q': {
 		    	printf("Exit\n");

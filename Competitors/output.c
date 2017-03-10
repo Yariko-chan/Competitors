@@ -10,20 +10,22 @@ l Login
 q Exit program
 */
 void print_auth_menu(void) {
-	printf("\n\nSelect operation to continue:\n");
-	printf("l Login \n");
-	printf("q Exit program \n");
+	puts("\n\nSelect operation to continue:");
+	puts("l Login");
+	puts("q Exit program");
 }
 
 /*
                ***MENU***
 v View players list       a Add player to list
+d Delte player            e Edit player info
 u User management         q Exit program
 */
 void print_main_menu(void) {
 	puts("\n\n               ***MENU***");
 	puts("v View players list       a Add player to list");
-	puts("u User management         q Exit program\n");
+	puts("d Delete player           e Edit player info");
+	puts("u User management         q Exit program");
 }
 
 /*
@@ -34,10 +36,21 @@ e Edit password         d Delete account
 q Exit to main menu
 */
 void print_manage_accounts_menu(void) {
-	printf("\n\n       ***USER MANAGEMENT***\n\n");
-	printf("v View all accounts     a Add new account\n");
-	printf("e Edit password         d Delete account\n");
-	printf("q Exit to main menu\n");
+	puts("\n\n       ***USER MANAGEMENT***\n");
+	puts("v View all accounts     a Add new account");
+	puts("e Edit password         d Delete account");
+	puts("q Exit to main menu");
+}
+
+/*
+How would you like to search player?
+n By number     s By surname
+q Exit to main menu
+*/
+void print_search_player_menu(void) {
+	puts("How would you like to search player?");
+	puts("n By number     s By surname");
+	puts("q Exit to main menu");
 }
 
 // print list of all logins
