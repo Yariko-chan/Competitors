@@ -19,14 +19,14 @@ void init_accounts_file(void) {
 	errno_t err = 0;
 
 	// open file or create if no such file
-	err = fopen_s(&fp, AUTH_FILE_NAME, "ab");
+	err = fopen_s(&fp, ACCOUNTS_FILE_NAME, "ab");
 	if (SUCCESS != err) { /* error opening file*/
 		/* recreate file by user confirmation */
 		if (ask_confirm("Error opening auth file. "
 			"Would you like to recreate file? All accounts will be removed.")) {
 			fclose(fp);
-		    remove(AUTH_FILE_NAME);
-		    err = fopen_s(&fp, AUTH_FILE_NAME, "ab");
+		    remove(ACCOUNTS_FILE_NAME);
+		    err = fopen_s(&fp, ACCOUNTS_FILE_NAME, "ab");
 			/* if can't create file, throw error and exit */
 		    if (SUCCESS != err) {
 			    error(ERR_FILE_CREATE, true);
@@ -42,28 +42,24 @@ void init_accounts_file(void) {
 	int length = ftell(fp);
 	if (0 == length) {
 		Account admin = {ADM_LOGIN, ADM_PASSW};
-		add_account(fp, &admin);
+		int writed_count = fwrite(&admin, sizeof(Account), 1, fp);
+		if (1 == writed_count) {
+			puts("Account successfully added.");
+		}
+		else {
+			printf("Error occured, account [%s] wasn't saved", admin.login);
+		}
 	}
 
 	close_file(fp);
 };
-
-void add_account(FILE* fp, const Account* acc) {
-	int writed_count = fwrite(acc, sizeof(Account), 1, fp);
-	if (1 == writed_count) {
-		puts("Account successfully added.");
-	}
-	else {
-		printf("Error occured, account [%s] wasn't saved", acc->login);
-	}
-}
 
 // rewrite accounts with new data
 void save_accounts_changes(Account * a_list, int count) {
 	FILE* fp;
 	size_t writed_count;
 
-	open_file(&fp, AUTH_FILE_NAME, "wb");
+	open_file(&fp, ACCOUNTS_FILE_NAME, "wb");
 	writed_count = fwrite(a_list, sizeof(Account), count, fp);
 	if (count == writed_count)
 		puts(MSG_SAVE_SUCCESS);
@@ -109,18 +105,18 @@ Account* get_accounts_list(int* count) {
 	Account* a_list;
 	size_t readed = 0;
 
-	open_file(&fp, AUTH_FILE_NAME, "rb");
+	open_file(&fp, ACCOUNTS_FILE_NAME, "rb");
 
 	// get count of contracts in file
 	fseek(fp, 0L, SEEK_END);
 	*count = ftell(fp) / sizeof(Account);
 	rewind(fp);
 
-	a_list = (Account*)calloc(count, sizeof(Account));
+	a_list = (Account*)calloc(*count, sizeof(Account));
 	/* why. this. works? but not *count*/
 
 	readed = fread_s(a_list,
-		(long)count * sizeof(Account), sizeof(Account), count, fp);
+		(long)(*count) * sizeof(Account), sizeof(Account), *count, fp);
 	if (readed != *count) {
 		errno = EILSEQ;
 		error(ERR_FILE_CORRUPTED, false);
@@ -128,6 +124,36 @@ Account* get_accounts_list(int* count) {
 
 	close_file(fp);
 	return a_list;
+}
+
+/*
+* returns pointer to list of players from file
+* allocates memory, need to free!
+*/
+Player* get_players_list(int* count) {
+	FILE* fp;
+	Player* p_list;
+	size_t readed = 0;
+
+	open_file(&fp, PLAYERS_FILE_NAME, "rb");
+
+	// get count of contracts in file
+	fseek(fp, 0L, SEEK_END);
+	*count = ftell(fp) / sizeof(Player);
+	rewind(fp);
+
+	p_list = (Player*)calloc(count, sizeof(Player));
+	/* why. this. works? but not *count*/
+
+	readed = fread_s(p_list,
+		(long)count * sizeof(Player), sizeof(Player), count, fp);
+	if (readed != *count) {
+		errno = EILSEQ;
+		error(ERR_FILE_CORRUPTED, false);
+	}
+
+	close_file(fp);
+	return p_list;
 }
 
 void open_file(FILE** fp, const char* file_name, const char* mode) {

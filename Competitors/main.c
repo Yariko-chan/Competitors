@@ -8,6 +8,7 @@
 #include "constants.h"
 #include "file.h"
 #include "accounts.h"
+#include "players.h"
 
 int g_role = 0;
 
@@ -83,6 +84,8 @@ void main_menu(void) {
 		clean_scan();
 		choice = getchar();
 		switch (choice) {
+		    case 'v': view_players_list(); break;
+		    case 'a': add_player(); break;
 		    case 'u': manage_accounts(); break;
 		    case 'q': {
 		    	printf("Exit\n");

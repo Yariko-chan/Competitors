@@ -115,6 +115,7 @@
     <ClCompile Include="input.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="output.c" />
+    <ClCompile Include="players.c" />
     <ClCompile Include="search.c" />
     <ClCompile Include="accounts.c" />
   </ItemGroup>
@@ -124,6 +125,7 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="output.h" />
+    <ClInclude Include="players.h" />
     <ClInclude Include="search.h" />
     <ClInclude Include="accounts.h" />
   </ItemGroup>

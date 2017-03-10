@@ -24,8 +24,14 @@ void add_new_account(void) {
 	FILE* fp;
 
 	Account new_a = input_account();
-	open_file(&fp, AUTH_FILE_NAME, "ab");
-	add_account(fp, &new_a);
+	open_file(&fp, ACCOUNTS_FILE_NAME, "ab");
+	int writed_count = fwrite(&new_a, sizeof(Account), 1, fp);
+	if (1 == writed_count) {
+		puts("Account successfully added.");
+	}
+	else {
+		printf("Error occured, account [%s] wasn't saved", new_a.login);
+	}
 	close_file(fp);
 }
 
