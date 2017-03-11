@@ -16,29 +16,32 @@ void print_auth_menu(void) {
 }
 
 /*
-               ***MENU***
+----------------------------------------------
+Select operation to continue:
 v View players list       a Add player to list
 d Delte player            e Edit player info
 u User management         q Exit program
 */
 void print_main_menu(void) {
-	puts("\n\n               ***MENU***");
+	puts("\n----------------------------------------------");
+	puts("Select operation to continue:");
 	puts("v View players list       a Add player to list");
 	puts("d Delete player           e Edit player info");
 	puts("u User management         q Exit program");
 }
 
 /*
-       ***USER MANAGEMENT***
-
+-----------------------------------------
+Select operation to continue:
 v View all accounts     a Add new account
 e Edit password         d Delete account
 q Exit to main menu
 */
 void print_manage_accounts_menu(void) {
-	puts("\n\n       ***USER MANAGEMENT***\n");
+	puts("\n-----------------------------------------");
+	puts("Select operation to continue:");
 	puts("v View all accounts     a Add new account");
-	puts("e Edit password         d Delete account");
+	puts("c Change password       d Delete account");
 	puts("q Exit to main menu");
 }
 
@@ -54,19 +57,29 @@ void print_search_player_menu(void) {
 }
 
 // print list of all logins
+/*                
+                 *ACCOUNTS*
+
+          |   Login   | Password  |
+          -------------------------
+          |           |           |
+          -------------------------*/
 void display_accounts_list(const Account* a, const int count) {
 	int i = 0;
-	puts(" *ACCOUNTS*");
-	puts("--------");
+	puts("                 *ACCOUNTS*\n");
+	printf("          |%-*s|%-*s|\n", LOGIN_LENGTH, "Login", PASSWORD_LENGTH, "Password");
+	printf("          ");
+	print_count_hyphen(LOGIN_LENGTH + PASSWORD_LENGTH + 3); /* 3 for 3x'|' */
 	for (i = 0; i < count; i++) {
-		puts(a[i].login);
+		printf("          |%-*s|%-*s|\n", LOGIN_LENGTH, a[i].login, PASSWORD_LENGTH, a[i].passw);
 	}
-	puts("--------");
+	printf("          ");
+	print_count_hyphen(LOGIN_LENGTH + PASSWORD_LENGTH + 3); /* 3 for 3x'|' */
 }
 
 // print all players data in table
 /*
-       ************PLAYERS************
+                  *PLAYERS*
 
 | N |              Surname N. P.| Age| Weight| Height|
 ------------------------------------------------------
@@ -84,4 +97,12 @@ void display_players_list(const Player * p_list, const int count) {
 			p.number, p.name.surname, p.name.name[0], p.name.patronym[0], p.age, p.weight, p.height);
 	}
 	puts("------------------------------------------------------");
+}
+
+//print line of @count hyphens
+void print_count_hyphen(const int count) {
+	for (int i = 0; i < count; i++) {
+		printf("-");
+	}
+	puts("");
 }

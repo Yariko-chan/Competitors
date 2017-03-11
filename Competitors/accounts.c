@@ -40,7 +40,7 @@ void delete_account(void)
 	Account * a_list;
 	int count;
 
-	puts("*DELETE ACCOUNT*");
+	puts("\nEnter login of account to delete.");
 	a_list = get_accounts_list(&count);
 	if (NULL == a_list) {
 		// free(a_list);
@@ -51,26 +51,25 @@ void delete_account(void)
 	
 	//if found
 	if (-1 < i) {
-		if (ask_confirm("Do you want to delete this account?")) {
+		if (ask_confirm("Are you sure you want to delete this account?")) {
 			for (i; i < (count - 1); i++) {
 				// move all items in list after i to previous position
 				a_list[i] = a_list[i + 1];
 			}
 			count--;
 			save_accounts_changes(a_list, count);
-			puts("Account successfully deleted.");
 		}
 	}
 
 	free(a_list);
 }
 
-void edit_account_pass(void) {
+void change_account_pass(void) {
 	Account * a_list;
 	char pass[PASSWORD_LENGTH];
 	int count;
 
-	puts("*CHANGE PASSWORD*");
+	puts("\nEnter login of account to change.");
 	a_list = get_accounts_list(&count);
 	if (NULL == a_list) {
 		// free(a_list);
@@ -82,15 +81,14 @@ void edit_account_pass(void) {
 	//if found
 	if (-1 < i) {
 		// get new password
-		printf("New password:");
+		printf("New password: ");
 		do {
 			scanf_s("%s", pass, PASSWORD_LENGTH);
 		} while ('\n' == (char)pass);
 
-		if (ask_confirm("Do you want to save new password?")) {
+		if (ask_confirm("Are you sure you want to save new password?")) {
 			strcpy_s(a_list[i].passw, PASSWORD_LENGTH, pass);
 			save_accounts_changes(a_list, count);
-			puts("Password successfully saved. ");
 		}
 	}
 

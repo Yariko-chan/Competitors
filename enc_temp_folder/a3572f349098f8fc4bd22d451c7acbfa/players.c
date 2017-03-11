@@ -56,6 +56,7 @@ void delete_player(void)
 			}
 			count--;
 			save_players_changes(p_list, count);
+			puts("Player successfully deleted.");
 		}
 	}
 

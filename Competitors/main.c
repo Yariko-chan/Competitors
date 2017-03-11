@@ -18,18 +18,7 @@ int main(void) {
 	init_accounts_file();
 	init_players_file();
 
-	printf(WELCOME);
-	do {
-		print_auth_menu();
-		clean_stdin();
-		choice = getchar();
-		switch (choice) {
-		    case 'l': login(); break;
-		    case 'q': printf("Exit\n"); break;
-		    default: printf("No such operation. Try again.\n"); break;
-		}
-		clean_stdin();
-	} while (choice != 'q');
+	login();
 }
 
 void login(void) {
@@ -40,12 +29,12 @@ void login(void) {
 	char correct_pass[PASSWORD_LENGTH];
 	char entered_pass[PASSWORD_LENGTH];
 	
-	printf("Enter login and password: \n");
+	//printf("Enter login and password: \n");
 
 	// TODO: rewrite with no break-continue-while(true)
 	// get existing login
 	do {
-		printf("%8s:", "Login");
+		printf("%8s: ", "Login");
 		scanf_s("%s", login, LOGIN_LENGTH);
 		get_password(login, correct_pass);
 		if (strlen(correct_pass) != 0) {
@@ -59,7 +48,7 @@ void login(void) {
 	
 	// get correct password
 	do {
-		printf("%8s:", "Password");
+		printf("%8s: ", "Password");
 		scanf_s("%s", entered_pass, PASSWORD_LENGTH);
 		if (STR_EQUALS == strcmp(correct_pass, entered_pass)) {
 			break;
@@ -75,7 +64,7 @@ void login(void) {
 	if (STR_EQUALS == strcmp(login, ADM_LOGIN)) {
 		g_role = 1;
 	}
-
+	printf(WELCOME);
 	main_menu();
 }
 
@@ -102,6 +91,10 @@ void main_menu(void) {
 
 void manage_accounts(void) {
 	char choice = ' ';
+
+	puts("------------------------------------------------------");
+	puts("\n          ***USER MANAGEMENT***");
+
 	do {
 		print_manage_accounts_menu();
 		clean_stdin();
@@ -110,9 +103,10 @@ void manage_accounts(void) {
 		case 'v': view_accounts_list();  break;
 		case 'a': add_new_account();  break;
 		case 'd': delete_account();  break;
-		case 'e': edit_account_pass(); break;
+		case 'c': change_account_pass(); break;
 		case 'q': break;
 		default: printf("No such operation. Try again.\n"); break;
 		}
 	} while (choice != 'q');
+	puts("------------------------------------------------------");
 }

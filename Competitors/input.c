@@ -41,11 +41,11 @@ bool ask_confirm(const char* str) {
 Account input_account(void) {
 	Account new_a;
 
-	puts("Enter data for new account:");
+	puts("\nEnter data for new account:");
 
-	printf("   Login: ");
+	printf("   Login(%2d symbols): ", LOGIN_LENGTH);
 	scanf_s("%s", new_a.login, LOGIN_LENGTH);
-	printf("Password: ");
+	printf("Password(%2d symbols): ", PASSWORD_LENGTH);
 	scanf_s("%s", new_a.passw, PASSWORD_LENGTH);
 
 	return new_a;
@@ -54,7 +54,7 @@ Account input_account(void) {
 Player input_player() {
 	Player new_p;
 
-	puts("Enter data for new player:");
+	puts("\nEnter data for new player:");
 
 	printf("%11s: ", "Name");
 	scanf_s("%s", new_p.name.name, NAME_LENGTH);

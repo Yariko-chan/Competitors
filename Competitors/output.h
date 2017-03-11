@@ -9,3 +9,5 @@ void print_search_player_menu(void);
 
 void display_accounts_list(const Account* a, const int count);
 void display_players_list(const Player* a, const int count);
+
+void print_count_hyphen(const int count);

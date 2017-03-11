@@ -27,7 +27,7 @@ int search_account(const Account *a_list, const long count)
 	int i;
 
 	do {
-		printf("Enter login:");
+		printf("Login: ");
 		do {
 			scanf_s("%s", login, LOGIN_LENGTH);
 		} while ('\n' == (char)login);
@@ -49,7 +49,7 @@ int search_account(const Account *a_list, const long count)
 		}
 	} while (i == -1);
 
-	printf("\n     FOUND: %s\n", a_list[i].login);
+	printf("\n     FOUND: %s\n\n", a_list[i].login);
 	return i;
 }
 
@@ -117,7 +117,7 @@ int search_player(const Player * p_list, const long count) {
 		}
 	} while (i == -1);
 
-	printf("\n     FOUND: %d %s %c. %c.\n", 
+	printf("\n     FOUND: %d %s %c. %c.\n\n", 
 		p_list[i].number, p_list[i].name.surname, p_list[i].name.name[0], p_list[i].name.patronym[0]);
 	return i;
 }
