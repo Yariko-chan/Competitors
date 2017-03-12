@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "file.h"
 #include "input.h"
@@ -73,4 +74,48 @@ Player input_player() {
 	scanf_s("%hu", &new_p.weight);
 	
 	return new_p;
+}
+
+void edit_str(char* editable, const char* tag, const size_t length) {
+	int pad = 15; // max size of tag and editable
+	printf("%*s: %*s New:", pad, tag, pad, editable);
+
+	char* tmp = (char*)calloc(length, sizeof(char));
+	read_str_or_skip(tmp, length);
+	if (strcmp("", tmp)) {
+		strcpy_s(editable, length, tmp);
+	}
+	free(tmp);
+}
+
+void edit_short(unsigned short* editable, const char* tag) {
+	int pad = 15; // max size of tag and editable
+	printf("%*s: %*d New:", pad, tag, pad, *editable);
+
+	read_hu_or_skip(editable);
+}
+
+//scan string of given length
+//skips if enter pressed
+void read_str_or_skip(char * str, const int length) {
+	char ch;
+	int i;
+
+	i = 0;
+	while ((ch = getchar()) != '\n' && length != i)
+	{
+		str[i] = ch;
+		i++;
+	}
+}
+
+//scan unsigned short
+//skips if enter pressed
+void read_hu_or_skip(unsigned short* hu) {
+	char ch;
+	while ((ch = getchar()) != '\n') // read first char
+	{                                // if enter skip
+		ungetc(ch, stdin);           // else push readed char back to input strem
+		scanf_s("%hu", hu);           // read float
+	}
 }

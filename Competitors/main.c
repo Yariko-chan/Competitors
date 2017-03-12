@@ -79,6 +79,7 @@ void main_menu(void) {
 		    case 'a': add_player(); break;
 			case 'd': delete_player(); break;
 		    case 'u': manage_accounts(); break;
+			case 'e': edit_player(); break;
 		    case 'q': {
 		    	printf("Exit\n");
 			    exit(EXIT_SUCCESS);

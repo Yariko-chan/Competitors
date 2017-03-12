@@ -61,3 +61,37 @@ void delete_player(void)
 
 	free(p_list);
 }
+
+void edit_player(void)
+{
+	Player * p_list;
+	int count;
+
+	puts("\n           *EDIT PLAYER*\n");
+	p_list = get_players_list(&count);
+	if (NULL == p_list) {
+		// free(p_list);
+		// already free
+		puts("No player in list");
+		return;
+	}
+	int i = search_player(p_list, count);
+
+	//if found
+	if (-1 < i) {
+		puts("Enter new values or press Enter to skip.\n");
+		clean_stdin();
+		edit_str(p_list[i].name.name, "Name", NAME_LENGTH);
+		edit_str(p_list[i].name.surname, "Surname", NAME_LENGTH);
+		edit_str(p_list[i].name.patronym, "Patronymic", NAME_LENGTH);
+		
+		edit_short(&p_list[i].number, "Number");
+		edit_short(&p_list[i].age, "Age");
+		edit_short(&p_list[i].height, "Height");
+		edit_short(&p_list[i].weight, "Weight");
+
+		save_players_changes(p_list, count);
+	}
+
+	free(p_list);
+}
