@@ -74,19 +74,33 @@ void main_menu(void) {
 		print_main_menu();
 		clean_stdin();
 		choice = getchar();
-		switch (choice) {
-		    case 'v': view_players_list(); break;
-		    case 'a': add_player(); break;
+		if (g_role) {
+			switch (choice) {
+			case 'v': view_players_list(); break;
+			case 'a': add_player(); break;
 			case 'd': delete_player(); break;
-		    case 'u': manage_accounts(); break;
+			case 'u': manage_accounts(); break;
 			case 'e': edit_player(); break;
-		    case 'q': {
-		    	printf("Exit\n");
-			    exit(EXIT_SUCCESS);
-			    break;
-		    }
-		default: printf("No such operation. Try again.\n"); break;
+			case 'q': {
+				printf("Exit\n");
+				exit(EXIT_SUCCESS);
+				break;
+			}
+			default: printf("No such operation. Try again.\n"); break;
+			}
 		}
+		else {
+			switch (choice) {
+			case 'v': view_players_list(); break;
+			case 'q': {
+				printf("Exit\n");
+				exit(EXIT_SUCCESS);
+				break;
+			}
+			default: printf("No such operation. Try again.\n"); break;
+			}
+		}
+		
 	} while (choice != 'q');
 }
 

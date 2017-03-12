@@ -4,6 +4,8 @@
 #include "constants.h"
 #include "output.h"
 
+extern g_role;
+
 /*
 Select operation to continue:
 l Login
@@ -18,16 +20,19 @@ void print_auth_menu(void) {
 /*
 ----------------------------------------------
 Select operation to continue:
-v View players list       a Add player to list
-d Delte player            e Edit player info
-u User management         q Exit program
+a Add player to list       e Edit player info
+d Delete player            u User management
+v View players list        q Exit program
 */
 void print_main_menu(void) {
 	puts("\n----------------------------------------------");
 	puts("Select operation to continue:");
-	puts("v View players list       a Add player to list");
-	puts("d Delete player           e Edit player info");
-	puts("u User management         q Exit program");
+	if (g_role) {
+		puts("a Add player to list       e Edit player info");
+	    puts("d Delete player            u User management");
+	}
+	
+	puts("v View players list        q Exit program");
 }
 
 /*
