@@ -87,7 +87,6 @@ int search_player(const Player * p_list, const long count) {
 	int* occ_indices;
 	int occ_count;
 
-	// find all occurences
 	do {
 		mode = get_search_mode();
 
@@ -122,7 +121,6 @@ int search_player(const Player * p_list, const long count) {
 		}
 	} while (occ_indices == NULL && occ_count == 0);
 
-	// print all occurences
 	puts("\n     FOUND:\n");
 	for (int i = 0; i < occ_count; i++) {
 		// 1. Surname N. P.
@@ -137,7 +135,6 @@ int search_player(const Player * p_list, const long count) {
 	if (occ_count == 1) {
 		res = occ_indices[0];
 	}
-	// select one player from all found
 	else {
 		int i = -1;
 		do {

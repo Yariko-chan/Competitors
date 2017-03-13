@@ -78,7 +78,7 @@ Player input_player() {
 
 void edit_str(char* editable, const char* tag, const size_t length) {
 	int pad = 15; // max size of tag and editable
-	printf("%*s: %*s New: ", pad, tag, pad, editable);
+	printf("%*s: %*s New:", pad, tag, pad, editable);
 
 	char* tmp = (char*)calloc(length, sizeof(char));
 	read_str_or_skip(tmp, length);
@@ -90,7 +90,7 @@ void edit_str(char* editable, const char* tag, const size_t length) {
 
 void edit_short(unsigned short* editable, const char* tag) {
 	int pad = 15; // max size of tag and editable
-	printf("%*s: %*d New: ", pad, tag, pad, *editable);
+	printf("%*s: %*d New:", pad, tag, pad, *editable);
 
 	read_hu_or_skip(editable);
 }
