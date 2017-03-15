@@ -37,6 +37,7 @@ void view_players_list(void) {
 		choice = getchar();
 		switch (choice) {
 		case 'f': filter_players_list(p_list, count);  break;
+		case 'e': search(); break;
 		case 'q': break;
 		default: printf("No such operation. Try again.\n"); break;
 		}
@@ -59,7 +60,7 @@ void delete_player(void)
 		puts("No player in list");
 		return;
 	}
-	int i = search_player(p_list, count);
+	int i = search_one_player(p_list, count);
 
 	//if found
 	if (-1 < i) {
@@ -89,7 +90,7 @@ void edit_player(void)
 		puts("No player in list");
 		return;
 	}
-	int i = search_player(p_list, count);
+	int i = search_one_player(p_list, count);
 
 	//if found
 	if (-1 < i) {
@@ -121,4 +122,19 @@ void filter_players_list(const Player* p_list, const int count) {
 	display_players_list(p_filtered_list, p_f_count);
 
 	free(p_filtered_list);
+}
+
+void search(void) {
+	Player * p_list;
+	int count;
+
+	p_list = get_players_list(&count);
+	if (NULL == p_list) {
+		// free(a_list);
+		// already free
+		puts("No player in list");
+		return;
+	}
+	int f_count; // just to match arguments
+	search_all_matching_players(p_list, count, &f_count);
 }

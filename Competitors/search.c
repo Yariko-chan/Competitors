@@ -82,63 +82,19 @@ int get_player_index_by_surname(const Player * p_list, const int count, const ch
 // need to free result pointer
 // @occ_count - count of occurences
 // if no occurences, occ_count = 0, return null
-int search_player(const Player * p_list, const long count) {
-	char mode = 'q';
-	int* occ_indices;
-	int occ_count;
-
-	// find all occurences
-	do {
-		mode = get_search_mode();
-
-		//exit to main
-		if ('q' == mode) return -1;
-
-		if ('n' == mode) {
-			printf("Number: ");
-			int num = -1;
-			scanf_s("%d", &num);
-			occ_indices = get_players_indexes_by_num(p_list, count, num, &occ_count);
-		}
-		else if ('s' == mode) {
-			printf("Surname: ");
-			char surname[NAME_LENGTH];
-			scanf_s("%s", surname, NAME_LENGTH);
-			occ_indices = get_players_indexes_by_surname(p_list, count, surname, &occ_count);
-		}
-
-		//not found
-		if (NULL == occ_indices || 0 == occ_count)
-		{
-			puts("Not found.");
-			if (!ask_confirm("Do you want to search another player ?"))
-			{
-				//if don't want, exit
-				//else start while loop again
-				free(occ_indices);
-				return -1;
-			}
-
-		}
-	} while (occ_indices == NULL && occ_count == 0);
-
-	// print all occurences
-	puts("\n     FOUND:\n");
-	for (int i = 0; i < occ_count; i++) {
-		// 1. Surname N. P.
-		int index = occ_indices[i];
-		printf("     %d. %d %s %c. %c.\n",
-			i + 1, p_list[index].number, p_list[index].name.surname, p_list[index].name.name[0], p_list[index].name.patronym[0]);
-	}
+int search_one_player(const Player * p_list, const long count) {
+	int occ_count = 0;
+	int* occ_indices = search_all_matching_players(p_list, count, &occ_count);
 
 	int res = -1;
 
+	// TODO: test for case when occ_count uninitialized
 	// only one occurence
 	if (occ_count == 1) {
 		res = occ_indices[0];
 	}
 	// select one player from all found
-	else {
+	else if (occ_count > 1) {
 		int i = -1;
 		do {
 			printf("Enter index in list to select player: ");
@@ -150,6 +106,9 @@ int search_player(const Player * p_list, const long count) {
 			}
 		} while (i < 1 || i > occ_count);
 		res = occ_indices[i - 1];
+	} else { /* if 0 occurences or some errors*/
+		free(occ_indices);
+		return -1;
 	}
 
 	printf("\n\n     %d %s %c. %c.\n",
@@ -157,6 +116,64 @@ int search_player(const Player * p_list, const long count) {
 
 	free(occ_indices);
 	return res;
+}
+
+// TODO: return occ_count and occ_indices in arguments
+
+// search all occurences
+// count of occurences saved to occ_count
+// return array of all indices in p_list that match
+// return NULL if no matching players
+// result allocated, need to be freed!
+int* search_all_matching_players(const Player * p_list, const long count, int* occ_count) {
+	char mode = 'q';
+	int* occ_indices;
+	*occ_count = 0; // by default
+
+	do {
+		mode = get_search_mode();
+
+		//exit to main
+		if ('q' == mode) return NULL;
+
+		if ('n' == mode) {
+			printf("Number: ");
+			int num = -1;
+			scanf_s("%d", &num);
+			occ_indices = get_players_indexes_by_num(p_list, count, num, occ_count);
+		}
+		else if ('s' == mode) {
+			printf("Surname: ");
+			char surname[NAME_LENGTH];
+			scanf_s("%s", surname, NAME_LENGTH);
+			occ_indices = get_players_indexes_by_surname(p_list, count, surname, occ_count);
+		}
+
+		//not found
+		if (NULL == occ_indices || 0 == *occ_count)
+		{
+			puts("Not found.");
+			if (!ask_confirm("Do you want to search another player ?"))
+			{
+				//if don't want, exit
+				//else start while loop again
+				free(occ_indices);
+				return NULL;
+			}
+
+		}
+	} while (occ_indices == NULL && *occ_count == 0);
+
+	// print all occurences
+	puts("\n     FOUND:\n");
+	for (int i = 0; i < *occ_count; i++) {
+		// 1. Surname N. P.
+		int index = occ_indices[i];
+		printf("     %d. %d %s %c. %c.\n",
+			i + 1, p_list[index].number, p_list[index].name.surname, p_list[index].name.name[0], p_list[index].name.patronym[0]);
+	}
+
+	return occ_indices;
 }
 
 //returns 'n', 's' or 'q'
