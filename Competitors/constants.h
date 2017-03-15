@@ -22,6 +22,9 @@
 #define ADM_LOGIN "admin"
 #define ADM_PASSW "admin"
 
+#define SIGN_DFLT 2
+#define VALUE_DFLT -1
+
 typedef struct {
 	char login[LOGIN_LENGTH];
 	char passw[PASSWORD_LENGTH];
@@ -41,4 +44,28 @@ typedef struct {
 	unsigned short age;
 	unsigned short height;
 	unsigned short weight;
+
+	// b - both, m - male, f - female
+	char gender;
 } Player;
+
+// struct for holding conditions like '< 30' 
+typedef struct {
+	/* -1=[<] 0=[=] 1=[>] SIGN_DFLT default/unitialized state */
+	int sign; 
+	int value; // VALUE_DFLT for default/unitialized state
+} Condition;
+
+typedef struct {
+	Condition age_c_1;
+	Condition age_c_2;
+	Condition height_c_1;
+	Condition height_c_2;
+	Condition weight_c_1;
+	Condition weight_c_2;
+
+	// b - both, m - male, f - female
+	char gender;
+} FilterSet;
+
+// TODO : unsigned short is just short or char, but check sign on initialization

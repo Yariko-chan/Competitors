@@ -112,6 +112,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="file.c" />
+    <ClCompile Include="filter.c" />
     <ClCompile Include="input.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="output.c" />
@@ -122,6 +123,7 @@
   <ItemGroup>
     <ClInclude Include="constants.h" />
     <ClInclude Include="file.h" />
+    <ClInclude Include="filter.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="output.h" />

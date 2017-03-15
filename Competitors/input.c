@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "file.h"
 #include "input.h"
+#include "output.h"
 #include "constants.h"
+#include "filter.h"
 
 // skip all characters from input entered previously 
 // (they can be scanned instead of entered further)
@@ -72,6 +75,8 @@ Player input_player() {
 	scanf_s("%hu", &new_p.height);
 	printf("%11s: ", "Weight");
 	scanf_s("%hu", &new_p.weight);
+	printf("%11s: ", "Gender");
+	scanf_s(" %c", &new_p.gender, 1);
 	
 	return new_p;
 }
@@ -118,4 +123,103 @@ void read_hu_or_skip(unsigned short* hu) {
 		ungetc(ch, stdin);           // else push readed char back to input strem
 		scanf_s("%hu", hu);           // read float
 	}
+}
+
+FilterSet get_filter_set(void) {
+	const FilterSet EMPTY_FILTER_SET = {
+		{ SIGN_DFLT, VALUE_DFLT },
+		{ SIGN_DFLT, VALUE_DFLT },
+		{ SIGN_DFLT, VALUE_DFLT },
+		{ SIGN_DFLT, VALUE_DFLT },
+		{ SIGN_DFLT, VALUE_DFLT },
+		{ SIGN_DFLT, VALUE_DFLT },
+		'b'
+	};
+
+	puts("Add required filter,");
+	puts("for example: \"Age :> 20\" to get all players over 20 years\n");
+	puts("Accepted signs: >  < =");
+	puts("Values - positive integers");
+	puts("Press Enter to skip filter\n");
+	clean_stdin();
+
+	FilterSet set = EMPTY_FILTER_SET;
+
+	int pad = 15; // in every string ':' is (pad + 1)th symbol and all tags aligned to it
+	
+	printf("%*s %*s: ", pad, "Age", pad, "");
+	set.age_c_1 = get_condition();
+	if (!is_void_condition(set.age_c_1)) {
+		printf("%*s %*s: ", pad, "Age", pad, "(additional)");
+		set.age_c_2 = get_condition();
+	}
+
+	printf("%*s %*s: ", pad, "Weight", pad, "");
+	set.weight_c_1 = get_condition();
+	if (!is_void_condition(set.weight_c_1)) {
+		printf("%*s %*s: ", pad, "Weight", pad, "(additional)");
+		set.weight_c_2 = get_condition();
+	}
+
+	printf("%*s %*s: ", pad, "Height", pad, "");
+	set.height_c_1 = get_condition();
+	if (!is_void_condition(set.height_c_1)) {
+		printf("%*s %*s: ", pad, "Height", pad, "(additional)");
+		set.height_c_2 = get_condition();
+	}
+
+	printf("%*s %*s: ", pad, "Gender", pad, "(m/f)");
+	set.gender = get_gender();
+
+	// display all filters
+	display_filter_set(set);
+
+	return set;
+}
+
+Condition get_condition(void) {
+	Condition c;
+	c.sign = SIGN_DFLT;
+	c.value = VALUE_DFLT;
+
+	char ch;
+
+	// find sign first
+	while ((ch = getchar()) != '\n') {
+		// save only first sign
+		if (is_char_sign(ch) && c.sign == SIGN_DFLT) {
+			switch (ch) {
+				case '<': c.sign = -1; break;
+				case '>': c.sign =  1; break;
+				case '=': c.sign =  0; break;
+				default: break;
+		}
+		} /* save only first value and only after saved sign*/
+		else if (c.sign != SIGN_DFLT && isdigit(ch) && c.value == VALUE_DFLT) {
+			ungetc(ch, stdin);
+			scanf_s("%d", &c.value);
+		}
+	}
+	return c;
+}
+
+char get_gender(void) {
+	char res = 'b';
+
+	char ch;
+
+	while ((ch = getchar()) != '\n') {
+		/* save only first proper letter */
+		if ('b' == res && ('m' == ch || 'f' == ch)) {
+			res = ch;
+		}
+	}
+	return res;
+}
+
+bool is_char_sign(const char c) {
+	if (c == '>' || c == '<' || c == '=') {
+		return true;
+	}
+	return false;
 }

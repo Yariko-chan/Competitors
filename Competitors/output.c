@@ -2,7 +2,9 @@
 #include <stdio.h>
 
 #include "constants.h"
+#include "input.h"
 #include "output.h"
+#include "filter.h"
 
 extern g_role;
 
@@ -61,6 +63,17 @@ void print_search_player_menu(void) {
 	puts("q Exit to main menu");
 }
 
+/*
+Select option:
+f Filter players   s Sort players list
+e Search player    q Exit to main menu
+*/
+void print_view_menu(void) {
+	puts("\nSelect option:");
+	puts("f Filter players   s Sort players list");
+	puts("e Search player    q Exit to main menu");
+}
+
 // print list of all logins
 /*                
                  *ACCOUNTS*
@@ -84,24 +97,24 @@ void display_accounts_list(const Account* a, const int count) {
 
 // print all players data in table
 /*
-                  *PLAYERS*
+          ************PLAYERS************
 
-| N |              Surname N. P.| Age| Weight| Height|
+| N |              Surname N. P.| Gender| Age| Weight| Height|
 ------------------------------------------------------
-|   |                           |    |       |       |
+|   |                           |       |    |       |       |
 ------------------------------------------------------
 */
 void display_players_list(const Player * p_list, const int count) {
-	puts("       ************PLAYERS************\n");
-	printf("|%3s|%27s|%4s|%7s|%7s|\n",
-		"N", "Surname N.P.", "Age", "Weight", "Height");
-	puts("------------------------------------------------------");
+	puts("\n          ************PLAYERS************\n");
+	printf("|%3s|%27s|%7s|%4s|%7s|%7s|\n",
+		"N", "Surname N.P.", "Gender", "Age", "Weight", "Height");
+	puts("--------------------------------------------------------------");
 	for (int i = 0; i < count; i++) {
 		Player p = p_list[i];
-		printf("|%3hu|%21s %c. %c.|%4hu|%7hu|%7hu|\n",
-			p.number, p.name.surname, p.name.name[0], p.name.patronym[0], p.age, p.weight, p.height);
+		printf("|%3hu|%21s %c. %c.|%7c|%5hu|%7hu|%7hu|\n",
+			p.number, p.name.surname, p.name.name[0], p.name.patronym[0], p.gender, p.age, p.weight, p.height);
 	}
-	puts("------------------------------------------------------");
+	puts("--------------------------------------------------------------");
 }
 
 //print line of @count hyphens
@@ -110,4 +123,44 @@ void print_count_hyphen(const int count) {
 		printf("-");
 	}
 	puts("");
+}
+
+void display_filter_set(FilterSet set) {
+	puts("\n      FILTERS");
+	int pad = 10;
+	if (!is_void_condition(set.age_c_1)) {
+		printf("%*s %c %d\n", pad, "age", get_char_sign(set.age_c_1.sign), set.age_c_1.value);
+		if (!is_void_condition(set.age_c_2)) {
+			printf("%*s %c %d\n", pad, "age", get_char_sign(set.age_c_2.sign), set.age_c_2.value);
+		}
+	}
+	if (!is_void_condition(set.weight_c_1)) {
+		printf("%*s %c %d\n", pad, "weight", get_char_sign(set.weight_c_1.sign), set.weight_c_1.value);
+		if (!is_void_condition(set.weight_c_2)) {
+			printf("%*s %c %d\n", pad, "weight", get_char_sign(set.weight_c_2.sign), set.weight_c_2.value);
+		}
+	}
+	if (!is_void_condition(set.height_c_1)) {
+		printf("%*s %c %d\n", pad, "height", get_char_sign(set.height_c_1.sign), set.height_c_1.value);
+		if (!is_void_condition(set.height_c_2)) {
+			printf("%*s %c %d\n", pad, "height", get_char_sign(set.height_c_2.sign), set.height_c_2.value);
+		}
+	}
+
+	char* gender;
+	switch (set.gender) {
+	case 'm': gender = "male";   break;
+	case 'f': gender = "female"; break;
+	default:  gender = "both";   break;
+	}
+	printf("%*s: %s\n", pad, "gender", gender);
+}
+
+char get_char_sign(char sign) {
+	switch (sign) {
+	case -1: return '<';
+	case  1: return '>';
+	case  0: return '=';
+	default: return '?';
+	}
 }

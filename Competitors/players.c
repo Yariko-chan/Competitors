@@ -3,6 +3,8 @@
 #include "input.h"
 #include "search.h"
 #include "output.h"
+#include "players.h"
+#include "filter.h"
 
 void add_player(void) {
 	FILE * fp;
@@ -22,14 +24,26 @@ void add_player(void) {
 }
 
 void view_players_list(void) {
-	Player* a;
+	Player* p_list;
 	int count;
 
-	a = get_players_list(&count);
-	display_players_list(a, count);
+	p_list = get_players_list(&count);
+	display_players_list(p_list, count);
+
+	char choice;
+	do {
+		print_view_menu();
+		clean_stdin();
+		choice = getchar();
+		switch (choice) {
+		case 'f': filter_players_list(p_list, count);  break;
+		case 'q': break;
+		default: printf("No such operation. Try again.\n"); break;
+		}
+	} while (choice != 'q');
 
 	//free allocated array
-	free(a);
+	free(p_list);
 }
 
 void delete_player(void)
@@ -94,4 +108,17 @@ void edit_player(void)
 	}
 
 	free(p_list);
+}
+
+void filter_players_list(const Player* p_list, const int count) {
+
+	FilterSet filters = get_filter_set();
+
+	// count of players after filtration
+	int p_f_count = 0;
+	Player* p_filtered_list = filter(p_list, count, filters, &p_f_count);
+
+	display_players_list(p_filtered_list, p_f_count);
+
+	free(p_filtered_list);
 }

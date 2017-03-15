@@ -15,3 +15,9 @@ void edit_short(unsigned short* editable, const char* tag);
 
 void read_str_or_skip(char * str, const int length);
 void read_hu_or_skip(unsigned short* hu);
+
+FilterSet get_filter_set(void);
+Condition get_condition(void);
+char get_gender(void);
+
+bool is_char_sign(const char c);
