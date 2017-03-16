@@ -74,6 +74,23 @@ void print_view_menu(void) {
 	puts("e Search player    q Exit to main menu");
 }
 
+/*
+How would you like to sort players list?
+
+n By number       s By surname
+w By Weight       h By height
+a By age          g By gender
+    q Exit to main menu
+*/
+void print_sort_mode_menu(void)
+{
+	puts("\nHow would you like to sort_by_mode players list?\n");
+	puts("n By number       s By surname");
+	puts("w By Weight       h By height");
+	puts("a By age          g By gender");
+	puts("    q Exit to main menu");
+}
+
 // print list of all logins
 /*                
                  *ACCOUNTS*

@@ -21,3 +21,5 @@ Condition get_condition(void);
 char get_gender(void);
 
 bool is_char_sign(const char c);
+
+char get_sort_mode(void);

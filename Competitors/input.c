@@ -223,3 +223,15 @@ bool is_char_sign(const char c) {
 	}
 	return false;
 }
+
+//returns first letter from input
+char get_sort_mode(void)
+{
+	char mode;
+	do {
+		print_sort_mode_menu();
+		clean_stdin();
+		mode = getchar();
+	} while (!isalpha(mode));
+	return mode;
+}

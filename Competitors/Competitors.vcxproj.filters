@@ -39,6 +39,9 @@
     <ClCompile Include="filter.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sort.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="output.h">
@@ -66,6 +69,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

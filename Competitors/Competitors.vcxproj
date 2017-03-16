@@ -119,6 +119,7 @@
     <ClCompile Include="players.c" />
     <ClCompile Include="search.c" />
     <ClCompile Include="accounts.c" />
+    <ClCompile Include="sort.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
@@ -130,6 +131,7 @@
     <ClInclude Include="players.h" />
     <ClInclude Include="search.h" />
     <ClInclude Include="accounts.h" />
+    <ClInclude Include="sort.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,6 +5,7 @@
 #include "output.h"
 #include "players.h"
 #include "filter.h"
+#include "sort.h"
 
 void add_player(void) {
 	FILE * fp;
@@ -37,7 +38,8 @@ void view_players_list(void) {
 		choice = getchar();
 		switch (choice) {
 		case 'f': filter_players_list(p_list, count);  break;
-		case 'e': search(); break;
+		case 'e': search(p_list, count); break;
+		case 's': sort_players_list(p_list, count); break;
 		case 'q': break;
 		default: printf("No such operation. Try again.\n"); break;
 		}
@@ -124,17 +126,22 @@ void filter_players_list(const Player* p_list, const int count) {
 	free(p_filtered_list);
 }
 
-void search(void) {
-	Player * p_list;
-	int count;
-
-	p_list = get_players_list(&count);
-	if (NULL == p_list) {
-		// free(a_list);
-		// already free
-		puts("No player in list");
-		return;
-	}
+void search(const Player* p_list, const int count) {
 	int f_count; // just to match arguments
 	search_all_matching_players(p_list, count, &f_count);
+}
+
+void sort_players_list(Player* p_list, const int p_count) {
+
+	// select attribute for search
+	char mode = get_sort_mode();
+
+	// TODO: test this
+	// exit to main
+	if ('q' == mode) return;
+
+	sort_by_mode(p_list, p_count, mode);
+
+	display_players_list(p_list, p_count);
+	save_players_changes(p_list, p_count);
 }
