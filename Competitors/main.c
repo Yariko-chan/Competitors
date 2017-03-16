@@ -10,7 +10,8 @@
 #include "accounts.h"
 #include "players.h"
 
-int g_role = 0;
+// 1 - admin, 0 - user(default)
+int g_account = 0;
 
 int main(void) {
 	char choice = ' ';
@@ -18,13 +19,24 @@ int main(void) {
 	init_accounts_file();
 	init_players_file();
 
-	login();
+	// sign_in();
+	printf(WELCOME);
+	do {
+		print_auth_menu();
+		choice = getchar();
+		switch (choice) {
+		case 's': sign_in(); break;
+		case 'q': printf("Exit\n"); break;
+		default: printf("No such operation. Try again.\n"); break;
+		}
+		clean_stdin();
+	} while (choice != 'q');
 }
 
-void login(void) {
+void sign_in(void) {
 	const int STR_EQUALS = 0;
 
-	// TODO: add some info about success login
+	// TODO: add some info about success sign_in
 	char login[LOGIN_LENGTH];
 	char correct_pass[PASSWORD_LENGTH];
 	char entered_pass[PASSWORD_LENGTH];
@@ -62,7 +74,7 @@ void login(void) {
 
 	// if account - admin, change role
 	if (STR_EQUALS == strcmp(login, ADM_LOGIN)) {
-		g_role = 1;
+		g_account = 1;
 	}
 	printf(WELCOME);
 	main_menu();
@@ -74,13 +86,14 @@ void main_menu(void) {
 		print_main_menu();
 		clean_stdin();
 		choice = getchar();
-		if (g_role) {
+		if (g_account) {
 			switch (choice) {
 			case 'v': view_players_list(); break;
 			case 'a': add_player(); break;
 			case 'd': delete_player(); break;
 			case 'u': manage_accounts(); break;
 			case 'e': edit_player(); break;
+			case 's': g_account = 0; return;
 			case 'q': {
 				printf("Exit\n");
 				exit(EXIT_SUCCESS);
@@ -92,6 +105,7 @@ void main_menu(void) {
 		else {
 			switch (choice) {
 			case 'v': view_players_list(); break;
+			case 's': return;
 			case 'q': {
 				printf("Exit\n");
 				exit(EXIT_SUCCESS);

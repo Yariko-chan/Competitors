@@ -6,35 +6,46 @@
 #include "output.h"
 #include "filter.h"
 
-extern g_role;
+extern g_account;
 
 /*
 Select operation to continue:
-l Login
+s Sign in
 q Exit program
 */
 void print_auth_menu(void) {
 	puts("\n\nSelect operation to continue:");
-	puts("l Login");
+	puts("s Sign in");
 	puts("q Exit program");
 }
 
 /*
 ----------------------------------------------
 Select operation to continue:
-a Add player to list       e Edit player info
-d Delete player            u User management
-v View players list        q Exit program
+
+v View players list        a Add player to list
+e Edit player info         d Delete player
+u User management
+
+s Sign out                 q Exit program
+
+----------------------------------------------
+Select operation to continue:
+
+v View players list
+s Sign out                 q Exit program
 */
 void print_main_menu(void) {
 	puts("\n----------------------------------------------");
-	puts("Select operation to continue:");
-	if (g_role) {
-		puts("a Add player to list       e Edit player info");
-	    puts("d Delete player            u User management");
+	puts("Select operation to continue:\n");
+	printf("v View players list        ");
+	if (g_account) {
+		puts("a Add player to list");
+	    puts("e Edit player info         d Delete player");
+		printf("u User management");
 	}
 	
-	puts("v View players list        q Exit program");
+	puts("\n\ns Sign out                 q Exit program");
 }
 
 /*
@@ -77,18 +88,18 @@ void print_view_menu(void) {
 /*
 How would you like to sort players list?
 
-n By number       s By surname
-w By Weight       h By height
-a By age          g By gender
-    q Exit to main menu
+n By number          s By surname
+w By Weight          h By height
+a By age             g By gender
+q Exit to main menu
 */
 void print_sort_mode_menu(void)
 {
 	puts("\nHow would you like to sort_by_mode players list?\n");
-	puts("n By number       s By surname");
-	puts("w By Weight       h By height");
-	puts("a By age          g By gender");
-	puts("    q Exit to main menu");
+	puts("n By number          s By surname");
+	puts("w By Weight          h By height");
+	puts("a By age             g By gender");
+	puts("q Exit to main menu");
 }
 
 // print list of all logins
