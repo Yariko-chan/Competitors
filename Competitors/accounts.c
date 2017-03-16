@@ -20,10 +20,37 @@ void view_accounts_list(void) {
 }
 
 
-void add_new_account(void) {
-	FILE* fp;
+void add_account(void) {
 
 	Account new_a = input_account();
+
+	// check if login already exists
+	int a_count = 0;
+	Account* a_list = get_accounts_list(&a_count);
+	if (0 == a_count) { /* if list void add new */
+		add_new_account(new_a);
+		free(a_list);
+		return;
+	}
+
+	// find account in list by login
+	// DO NOT free(a_list) until found Account is need
+	int i = get_account_index(a_list, a_count, new_a.login);
+
+	if (i > -1) { /* if account found, rewrite pass */
+		if (ask_confirm("Account already exists. Rewrite password? ")) {
+			strcpy_s(a_list[i].passw, PASSWORD_LENGTH, new_a.passw);
+			save_accounts_changes(a_list, a_count);
+		}
+	}
+	else { /* account not found, add_new */
+		add_new_account(new_a);
+	}
+	free(a_list);
+}
+
+void add_new_account(Account new_a) {
+	FILE* fp;
 	open_file(&fp, ACCOUNTS_FILE_NAME, "ab");
 	int writed_count = fwrite(&new_a, sizeof(Account), 1, fp);
 	if (1 == writed_count) {

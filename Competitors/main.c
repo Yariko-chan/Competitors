@@ -116,7 +116,7 @@ void manage_accounts(void) {
 		choice = getchar();
 		switch (choice) {
 		    case 'v': view_accounts_list();  break;
-		    case 'a': add_new_account();  break;
+		    case 'a': add_account();  break;
 		    case 'd': delete_account();  break;
 		    case 'c': change_account_pass(); break;
 		    case 'q': break;
