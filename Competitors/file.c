@@ -205,11 +205,17 @@ void get_pass_from_account(const char* login, char* pass) {
 	// DO NOT free(a_list) until found Account is need
 	int i = get_account_index(a_list, count, login);
 
+	int res;
 	if (i > -1) { /* if account found, return pass */
-		strcpy_s(pass, PASSWORD_LENGTH, (a_list + i)->passw);
+		res = strcpy_s(pass, PASSWORD_LENGTH, (a_list + i)->passw);
 	}
 	else { /* account not found, return void pass */
-		strcpy_s(pass, PASSWORD_LENGTH, "");
+		res = strcpy_s(pass, PASSWORD_LENGTH, "");
+	}
+	if (res != 0) {
+		// if continue, strlen(pass) -> strlen(NULL) -> throw exception
+		errno = EINTR;
+		error("Error occured while copy, password can't be checked.", true);
 	}
 	free(a_list);
 }

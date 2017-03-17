@@ -157,8 +157,9 @@ void edit_str(char* editable, const char* tag, const size_t length) {
 
 	char* tmp = (char*)calloc(length, sizeof(char));
 	read_str_or_skip(tmp, length);
-	if (strcmp("", tmp)) {
-		strcpy_s(editable, length, tmp);
+	if (strcmp("", tmp)) { /* tmp != " " */
+		int res = strcpy_s(editable, length, tmp);
+		if (0 != res) puts("\nError editing string, changes didn't saved.");
 	}
 	free(tmp);
 }

@@ -31,6 +31,7 @@ void view_players_list(void) {
 	p_list = get_players_list(&count);
 	display_players_list(p_list, count);
 
+	if (0 == count) return;
 	char choice;
 	do {
 		print_view_menu();

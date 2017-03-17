@@ -66,8 +66,13 @@ void add_account(void) {
 
 	if (i > -1) { /* if account found, rewrite pass */
 		if (ask_confirm("Account already exists. Rewrite password? ")) {
-			strcpy_s(a_list[i].passw, PASSWORD_LENGTH, new_a.passw);
-			save_accounts_changes(a_list, a_count);
+			int res = strcpy_s(a_list[i].passw, PASSWORD_LENGTH, new_a.passw);
+			if (res != 0) {
+				puts("\nError editing string, changes didn't saved. ");
+			}
+			else {
+				save_accounts_changes(a_list, a_count);
+			}
 		}
 	}
 	else { /* account not found, add_new */
@@ -141,8 +146,13 @@ void change_account_pass(void) {
 		read_str(&pass, PASSWORD_LENGTH);
 
 		if (ask_confirm("Are you sure you want to save new password?")) { /* replace password */
-			strcpy_s(a_list[i].passw, PASSWORD_LENGTH, pass);
-			save_accounts_changes(a_list, count);
+			int res = strcpy_s(a_list[i].passw, PASSWORD_LENGTH, pass);
+			if (res != 0) {
+				puts("\nError editing string, changes didn't saved. ");
+			}
+			else {
+				save_accounts_changes(a_list, count);
+			}
 		}
 	}
 
