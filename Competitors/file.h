@@ -5,8 +5,6 @@
 
 #include "constants.h"
 
-// TODO: make some order in this chaos :(
-
  void init_accounts_file(void);
  void init_players_file(void);
 
@@ -16,7 +14,7 @@
  Account* get_accounts_list(int* count);
  Player* get_players_list(int* count);
 
- void get_password(const char* login, char* pass);
+ void get_pass_from_account(const char* login, char* pass);
 
  void open_file(FILE** fp, const char* file_name, const char* mode);
  void close_file(FILE* fp);

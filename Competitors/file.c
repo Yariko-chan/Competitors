@@ -11,8 +11,9 @@
 
 const int SUCCESS = 0;
 
-// try to open file for apppend
-// creates file with init data if no file
+/*
+creates file with init data if no file
+*/
 void init_accounts_file(void) {
 
 	FILE* fp;
@@ -54,8 +55,9 @@ void init_accounts_file(void) {
 	close_file(fp);
 };
 
-// try to open file for apppend
-// creates void file if no file
+/*
+creates void file if no file
+*/
 void init_players_file(void) {
 
 	FILE* fp;
@@ -83,7 +85,9 @@ void init_players_file(void) {
 	close_file(fp);
 };
 
-// rewrite accounts with new data
+/*
+rewrite auth file with new data
+*/
 void save_accounts_changes(Account * a_list, int count) {
 	FILE* fp;
 	size_t writed_count;
@@ -97,7 +101,9 @@ void save_accounts_changes(Account * a_list, int count) {
 	close_file(fp);
 }
 
-// rewrite players file with new data
+/*
+rewrite players file with new data
+*/
 void save_players_changes(const Player * p_list, const int count) {
 	FILE* fp;
 	size_t writed_count;
@@ -113,36 +119,9 @@ void save_players_changes(const Player * p_list, const int count) {
 }
 
 /*
- * search account in file
- * if exists, save correct password to @pass
- * else @pass = ""
- */
-void get_password(const char* login, char* pass) {
-
-	// get list of all accounts
-	int count = 0;
-	Account* a_list = get_accounts_list(&count);
-	if (0 == count) { /* if list void throw error and exit */
-		errno = EINTR;
-		error("Accounts list empty. ", true);
-	}
-
-	// find account in list by login
-	// DO NOT free(a_list) until found Account is need
-	int i = get_account_index(a_list, count, login);
-
-	if (i > -1) { /* if account found, return pass */
-		strcpy_s(pass, PASSWORD_LENGTH, (a_list+i)->passw);
-	}
-	else { /* account not found, return void pass */
-		strcpy_s(pass, PASSWORD_LENGTH, "");
-	}
-	free(a_list);
-}
-
-/*
- * returns pointer to list of accounts from file
- * allocates memory, need to free!
+ return pointer to list of accounts from file
+ return NULL if file void
+ allocates memory, need to free!
  */
 Account* get_accounts_list(int* count) {
 	FILE* fp;
@@ -161,7 +140,6 @@ Account* get_accounts_list(int* count) {
 	rewind(fp);
 
 	a_list = (Account*)calloc(*count, sizeof(Account));
-	/* why. this. works? but not *count*/
 
 	readed = fread_s(a_list,
 		(long)(*count) * sizeof(Account), sizeof(Account), *count, fp);
@@ -175,8 +153,9 @@ Account* get_accounts_list(int* count) {
 }
 
 /*
-* returns pointer to list of players from file
-* allocates memory, need to free!
+return pointer to list of players from file
+return NULL if file void
+allocates memory, need to free!
 */
 Player* get_players_list(int* count) {
 	FILE* fp;
@@ -184,11 +163,6 @@ Player* get_players_list(int* count) {
 	size_t readed = 0;
 
 	open_file(&fp, PLAYERS_FILE_NAME, "rb");
-
-	// TODO: save count in file before list
-	// use this for checking corectness of file
-
-	// TODO: save list in some sorted order
 
 	// get count of contracts in file
 	fseek(fp, 0L, SEEK_END);
@@ -212,6 +186,38 @@ Player* get_players_list(int* count) {
 	return p_list;
 }
 
+/*
+* search account in file
+* if exists, save correct password to @pass
+* else @pass = ""
+*/
+void get_pass_from_account(const char* login, char* pass) {
+
+	// get list of all accounts
+	int count = 0;
+	Account* a_list = get_accounts_list(&count);
+	if (0 == count) { /* if list void throw error and exit */
+		errno = EINTR;
+		error("Accounts list empty. ", true);
+	}
+
+	// find account in list by login
+	// DO NOT free(a_list) until found Account is need
+	int i = get_account_index(a_list, count, login);
+
+	if (i > -1) { /* if account found, return pass */
+		strcpy_s(pass, PASSWORD_LENGTH, (a_list + i)->passw);
+	}
+	else { /* account not found, return void pass */
+		strcpy_s(pass, PASSWORD_LENGTH, "");
+	}
+	free(a_list);
+}
+
+/*
+open file
+exit if error occured
+*/
 void open_file(FILE** fp, const char* file_name, const char* mode) {
 	errno_t err = fopen_s(fp, file_name, mode);
 	if (SUCCESS != err) { /* if error opening file, exit program */
@@ -219,6 +225,10 @@ void open_file(FILE** fp, const char* file_name, const char* mode) {
 	}
 }
 
+/*
+close file
+exit if error occured
+*/
 void close_file(FILE* fp) {
 	errno_t err = fclose(fp);
 	if (SUCCESS != err) { /* if can't close, exit prigram */
@@ -226,9 +236,11 @@ void close_file(FILE* fp) {
 	}
 }
 
-// handling error
-// print error message to stderr
-// exit if error critical for program
+/*
+handling error
+print @message to stderr
+exit if error @critical for program
+*/
 void error(const char* message, const _Bool critical) {
 	perror(message);
 	if (critical) {

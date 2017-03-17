@@ -7,7 +7,7 @@
 #include "filter.h"
 #include "file.h"
 
-Player* filter(const Player* p_list, const int p_count, const FilterSet f_set,
+Player* filter_players_list(const Player* p_list, const int p_count, const FilterSet f_set,
 	int* f_p_count) {
 	bool* accepted = (bool*)calloc(p_count, sizeof(bool));
 	*f_p_count = 0;
@@ -34,15 +34,19 @@ Player* filter(const Player* p_list, const int p_count, const FilterSet f_set,
 	return f_p_list;
 }
 
+/*
+returns is @p fits @f_set
+*/
 bool fit_filters(const Player p, const FilterSet f_set) {
 
 	// check all numeric fields
-	if (!fit_condition(p.age, f_set.age_c_1)
-		&& !fit_condition(p.age, f_set.age_c_2)) return false;
-	if (!fit_condition(p.weight, f_set.weight_c_1)
-		&& !fit_condition(p.weight, f_set.weight_c_2)) return false;
-	if (!fit_condition(p.height, f_set.height_c_1)
-		&& !fit_condition(p.height, f_set.height_c_2)) return false;
+	// if first false and second void, then must be false, but it true
+	if (!(fit_condition(p.age, f_set.age_c_1)
+		&& fit_condition(p.age, f_set.age_c_2))) return false;
+	if (!(fit_condition(p.weight, f_set.weight_c_1)
+		&& fit_condition(p.weight, f_set.weight_c_2))) return false;
+	if (!(fit_condition(p.height, f_set.height_c_1)
+		&& fit_condition(p.height, f_set.height_c_2))) return false;
 
 	// check gender
 	if (f_set.gender != 'b' && f_set.gender != p.gender) return false;
@@ -50,21 +54,24 @@ bool fit_filters(const Player p, const FilterSet f_set) {
 	return true;
 }
 
-// true by default
-// false if doesn't fit condition
+/*
+returns is @n fit in @c
+true by default or if some errors
+*/
 bool fit_condition(const short n, const Condition c) {
 	if (n < 0) {
 		errno = EINVAL;
 		error("Value for comparing must be non-negative.", false);
-		return true; // as if condition is void
+		return true;
 	}
 	if (is_void_condition(c)) return true;
 	return sign(n - c.value) == c.sign;
 }
 
-// 0 if 0
-// -1 if negative
-// +1 if positive
+/*
+function for checking sign of number
+return 0 if 0; -1 if negative; +1 if positive
+*/
 int sign(const int x) {
 	return (x > 0) - (x < 0);
 }

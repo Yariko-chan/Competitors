@@ -37,7 +37,7 @@ void view_players_list(void) {
 		clean_stdin();
 		choice = getchar();
 		switch (choice) {
-		case 'f': filter_players_list(p_list, count);  break;
+		case 'f': filter_players(p_list, count);  break;
 		case 'e': search(p_list, count); break;
 		case 's': sort_players_list(p_list, count); break;
 		case 'q': break;
@@ -57,8 +57,7 @@ void delete_player(void)
 	puts("\n          *DELETE PLAYER*\n");
 	p_list = get_players_list(&count);
 	if (NULL == p_list) {
-		// free(a_list);
-		// already free
+		// free(a_list) - already free
 		puts("No player in list");
 		return;
 	}
@@ -87,8 +86,7 @@ void edit_player(void)
 	puts("\n           *EDIT PLAYER*\n");
 	p_list = get_players_list(&count);
 	if (NULL == p_list) {
-		// free(p_list);
-		// already free
+		// free(p_list) - already free
 		puts("No player in list");
 		return;
 	}
@@ -113,13 +111,13 @@ void edit_player(void)
 	free(p_list);
 }
 
-void filter_players_list(const Player* p_list, const int count) {
+void filter_players(const Player* p_list, const int count) {
 
-	FilterSet filters = get_filter_set();
+	FilterSet filters = input_filter_set();
 
 	// count of players after filtration
 	int p_f_count = 0;
-	Player* p_filtered_list = filter(p_list, count, filters, &p_f_count);
+	Player* p_filtered_list = filter_players_list(p_list, count, filters, &p_f_count);
 
 	display_players_list(p_filtered_list, p_f_count);
 
@@ -134,10 +132,9 @@ void search(const Player* p_list, const int count) {
 void sort_players_list(Player* p_list, const int p_count) {
 
 	// select attribute for search
-	char mode = get_sort_mode();
+	char mode = input_sort_mode();
 
-	// TODO: test this
-	// exit to main
+	// exit to view menu
 	if ('q' == mode) return;
 
 	sort_by_mode(p_list, p_count, mode);

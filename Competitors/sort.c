@@ -5,6 +5,9 @@
 #include "constants.h"
 #include "sort.h"
 
+/*
+sort @p_list by @mode
+*/
 void sort_by_mode(Player* p_list, const int count, const char mode) {
 	switch (mode) {
 	case 'n':
@@ -36,8 +39,10 @@ void sort_by_mode(Player* p_list, const int count, const char mode) {
 	
 }
 
-//comparing Contracts by number
-// 0: x1 = x2 | <0: x1 < x2 | >0: x1 > x2
+/*
+comparing by one of the field
+*/
+
 int compare_num(const void * p1, const void * p2)
 {
 	int result;

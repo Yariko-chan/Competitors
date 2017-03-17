@@ -65,19 +65,19 @@ void print_manage_accounts_menu(void) {
 
 /*
 How would you like to search player?
-n By number     s By surname
-q Exit to main menu
+n By number           s By surname
+q Exit to view menu
 */
 void print_search_player_menu(void) {
 	puts("How would you like to search player?");
-	puts("n By number     s By surname");
-	puts("q Exit to main menu");
+	puts("n By number           s By surname");
+	puts("q Exit to view menu");
 }
 
 /*
 Select option:
 f Filter players   s Sort players list
-e Search player    q Exit to main menu
+e Search player    q Exit to view menu
 */
 void print_view_menu(void) {
 	puts("\nSelect option:");
@@ -89,17 +89,17 @@ void print_view_menu(void) {
 How would you like to sort players list?
 
 n By number          s By surname
-w By Weight          h By height
+w By weight          h By height
 a By age             g By gender
-q Exit to main menu
+q Exit to view menu
 */
 void print_sort_mode_menu(void)
 {
-	puts("\nHow would you like to sort_by_mode players list?\n");
+	puts("\nHow would you like to sort players list?\n");
 	puts("n By number          s By surname");
-	puts("w By Weight          h By height");
+	puts("w By weight          h By height");
 	puts("a By age             g By gender");
-	puts("q Exit to main menu");
+	puts("q Exit to view menu");
 }
 
 // print list of all logins
@@ -115,12 +115,12 @@ void display_accounts_list(const Account* a, const int count) {
 	puts("                 *ACCOUNTS*\n");
 	printf("          |%-*s|%-*s|\n", LOGIN_LENGTH, "Login", PASSWORD_LENGTH, "Password");
 	printf("          ");
-	print_count_hyphen(LOGIN_LENGTH + PASSWORD_LENGTH + 3); /* 3 for 3x'|' */
+	print_count_hyphen(LOGIN_LENGTH + PASSWORD_LENGTH + 3); /* 3 for 3*'|' */
 	for (i = 0; i < count; i++) {
 		printf("          |%-*s|%-*s|\n", LOGIN_LENGTH, a[i].login, PASSWORD_LENGTH, a[i].passw);
 	}
 	printf("          ");
-	print_count_hyphen(LOGIN_LENGTH + PASSWORD_LENGTH + 3); /* 3 for 3x'|' */
+	print_count_hyphen(LOGIN_LENGTH + PASSWORD_LENGTH + 3); /* 3 for 3*'|' */
 }
 
 // print all players data in table
@@ -128,9 +128,9 @@ void display_accounts_list(const Account* a, const int count) {
           ************PLAYERS************
 
 | N |              Surname N. P.| Gender| Age| Weight| Height|
-------------------------------------------------------
+--------------------------------------------------------------
 |   |                           |       |    |       |       |
-------------------------------------------------------
+--------------------------------------------------------------
 */
 void display_players_list(const Player * p_list, const int count) {
 	puts("\n          ************PLAYERS************\n");

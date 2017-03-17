@@ -1,4 +1,5 @@
 #pragma once
+
 void sort_by_mode(Player* p_list, const int count, const char mode);
 
 int compare_num(const void * p1, const void * p2);

@@ -12,17 +12,8 @@
 // skip all characters from input entered previously 
 // (they can be scanned instead of entered further)
 void clean_stdin(void) {
-	const char NEWLINE = '\n';
 
 	fseek(stdin, 0, SEEK_END);
-	//if (!feof(stdin)) {
-	//	char ch = ' ';
-	//    while ((ch = getchar()) != NEWLINE  && ch != EOF);
-	//}
-	
-	//while (!feof(stdin)) {
-	//	getchar();
-	//}
 }
 
 // get confirmation (or not) for query in arguments
@@ -47,10 +38,11 @@ Account input_account(void) {
 
 	puts("\nEnter data for new account:");
 
-	printf("   Login(%2d symbols): ", LOGIN_LENGTH);
-	scanf_s("%s", new_a.login, LOGIN_LENGTH);
-	printf("Password(%2d symbols): ", PASSWORD_LENGTH);
-	scanf_s("%s", new_a.passw, PASSWORD_LENGTH);
+	/* -1 because of '\0' at he end*/
+	printf("   Login(%2d symbols): ", LOGIN_LENGTH - 1); 
+	read_str(new_a.login, LOGIN_LENGTH);
+	printf("Password(%2d symbols): ", PASSWORD_LENGTH - 1);
+	read_str(new_a.passw, PASSWORD_LENGTH);
 
 	return new_a;
 }
@@ -61,24 +53,102 @@ Player input_player() {
 	puts("\nEnter data for new player:");
 
 	printf("%11s: ", "Name");
-	scanf_s("%s", new_p.name.name, NAME_LENGTH);
+	read_str(new_p.name.name, NAME_LENGTH);
 	printf("%11s: ", "Surname");
-	scanf_s("%s", new_p.name.surname, NAME_LENGTH);
+	read_str(new_p.name.surname, NAME_LENGTH);
 	printf("%11s: ", "Patronymic");
-	scanf_s("%s", new_p.name.patronym, NAME_LENGTH);
+	read_str(new_p.name.patronym, NAME_LENGTH);
 	
 	printf("%11s: ", "Number");
-	scanf_s("%hu", &new_p.number);
+	read_hu(&new_p.number);
 	printf("%11s: ", "Age");
-	scanf_s("%hu", &new_p.age);
+	read_hu(&new_p.age);
 	printf("%11s: ", "Height");
-	scanf_s("%hu", &new_p.height);
+	read_hu(&new_p.height);
 	printf("%11s: ", "Weight");
-	scanf_s("%hu", &new_p.weight);
+	read_hu(&new_p.weight);
 	printf("%11s: ", "Gender");
-	scanf_s(" %c", &new_p.gender, 1);
+	read_gender(&new_p.gender);
 	
 	return new_p;
+}
+
+// scan string of given length
+// @length - length of string, including '\0'
+void read_str(char * str, const int length) {
+	char ch;
+
+	clean_stdin();
+
+	/* skip non-literal and non-digit chars */
+	while (!isalnum(ch = getchar()));
+	ungetc(ch, stdin);
+
+	int i = 0;
+	// str[length - 1] is for '\0'
+	while ((ch = getchar()) != '\n' && i < (length - 1)) {  
+		str[i] = ch;
+		i++;
+	}
+	str[i] = '\0';
+}
+
+// scan unsigned short
+void read_hu(unsigned short* hu) {
+	char ch;
+	int c;
+
+	clean_stdin();
+	do {
+		while (!isdigit(ch = getchar()));
+		ungetc(ch, stdin);
+		c = scanf_s("%hu", hu);
+	} while (c != 1); /* until one successfully readed*/
+	
+}
+
+// scan only first 'f' or 'm'
+void read_gender(char* ch) {
+
+	clean_stdin();
+	do {
+		*ch = getchar();
+	} while (*ch != 'f' && *ch != 'm');
+}
+
+/*
+scan string of given length
+skips if enter pressed
+@length - length of string, including '\0'
+*/
+void read_str_or_skip(char * str, const int length) {
+	char ch;
+	int i;
+
+	i = 0;
+	while ((ch = getchar()) != '\n' && i < (length - 1))
+	{
+		str[i] = ch;
+		i++;
+	}
+	str[i] = '\0';
+}
+
+/*
+scan unsigned short
+skips if enter pressed
+*/
+void read_hu_or_skip(unsigned short* hu) {
+	char ch;
+	clean_stdin();
+	while ((ch = getchar()) != '\n')
+	{
+		if (isdigit(ch)) {
+			ungetc(ch, stdin);
+			int c = scanf_s("%hu", hu);
+			if (1 == c) break;
+		}
+	}
 }
 
 void edit_str(char* editable, const char* tag, const size_t length) {
@@ -100,32 +170,7 @@ void edit_short(unsigned short* editable, const char* tag) {
 	read_hu_or_skip(editable);
 }
 
-//scan string of given length
-//skips if enter pressed
-void read_str_or_skip(char * str, const int length) {
-	char ch;
-	int i;
-
-	i = 0;
-	while ((ch = getchar()) != '\n' && length != i)
-	{
-		str[i] = ch;
-		i++;
-	}
-}
-
-//scan unsigned short
-//skips if enter pressed
-void read_hu_or_skip(unsigned short* hu) {
-	char ch;
-	while ((ch = getchar()) != '\n') // read first char
-	{                                // if enter skip
-		ungetc(ch, stdin);           // else push readed char back to input strem
-		scanf_s("%hu", hu);           // read float
-	}
-}
-
-FilterSet get_filter_set(void) {
+FilterSet input_filter_set(void) {
 	const FilterSet EMPTY_FILTER_SET = {
 		{ SIGN_DFLT, VALUE_DFLT },
 		{ SIGN_DFLT, VALUE_DFLT },
@@ -145,31 +190,32 @@ FilterSet get_filter_set(void) {
 
 	FilterSet set = EMPTY_FILTER_SET;
 
-	int pad = 15; // in every string ':' is (pad + 1)th symbol and all tags aligned to it
+	int pad = 15; 
+	// in every string ':' is (pad + 1)th symbol and all tags aligned to it
 	
 	printf("%*s %*s: ", pad, "Age", pad, "");
-	set.age_c_1 = get_condition();
+	set.age_c_1 = input_condition();
 	if (!is_void_condition(set.age_c_1)) {
 		printf("%*s %*s: ", pad, "Age", pad, "(additional)");
-		set.age_c_2 = get_condition();
+		set.age_c_2 = input_condition();
 	}
 
 	printf("%*s %*s: ", pad, "Weight", pad, "");
-	set.weight_c_1 = get_condition();
+	set.weight_c_1 = input_condition();
 	if (!is_void_condition(set.weight_c_1)) {
 		printf("%*s %*s: ", pad, "Weight", pad, "(additional)");
-		set.weight_c_2 = get_condition();
+		set.weight_c_2 = input_condition();
 	}
 
 	printf("%*s %*s: ", pad, "Height", pad, "");
-	set.height_c_1 = get_condition();
+	set.height_c_1 = input_condition();
 	if (!is_void_condition(set.height_c_1)) {
 		printf("%*s %*s: ", pad, "Height", pad, "(additional)");
-		set.height_c_2 = get_condition();
+		set.height_c_2 = input_condition();
 	}
 
 	printf("%*s %*s: ", pad, "Gender", pad, "(m/f)");
-	set.gender = get_gender();
+	set.gender = input_gender();
 
 	// display all filters
 	display_filter_set(set);
@@ -177,7 +223,7 @@ FilterSet get_filter_set(void) {
 	return set;
 }
 
-Condition get_condition(void) {
+Condition input_condition(void) {
 	Condition c;
 	c.sign = SIGN_DFLT;
 	c.value = VALUE_DFLT;
@@ -203,7 +249,7 @@ Condition get_condition(void) {
 	return c;
 }
 
-char get_gender(void) {
+char input_gender(void) {
 	char res = 'b';
 
 	char ch;
@@ -225,7 +271,7 @@ bool is_char_sign(const char c) {
 }
 
 //returns first letter from input
-char get_sort_mode(void)
+char input_sort_mode(void)
 {
 	char mode;
 	do {

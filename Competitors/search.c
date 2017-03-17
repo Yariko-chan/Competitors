@@ -6,21 +6,12 @@
 #include "input.h"
 #include "output.h"
 
-// linear search
-int get_account_index(const Account* a_list, const int count, const char* key_login) {
-	int i = 0;
-	int res = 0;
-
-	for (i = 0; i < count; i++) {
-		res = strcmp(a_list[i].login, key_login);
-		if (0 == res) return i;
-	}
-	return -1;
-}
-
-//get login for search
-//search account in list
-//return index of account 
+/*
+get login for search from input
+search account in @a_list
+return index of account in @a_list
+or -1 if not found
+*/
 int search_account(const Account *a_list, const long count)
 {
 	char login[LOGIN_LENGTH];
@@ -29,7 +20,7 @@ int search_account(const Account *a_list, const long count)
 	do {
 		printf("Login: ");
 		do {
-			scanf_s("%s", login, LOGIN_LENGTH);
+			read_str(login, LOGIN_LENGTH);
 		} while ('\n' == (char)login);
 		
 		//search
@@ -53,43 +44,36 @@ int search_account(const Account *a_list, const long count)
 	return i;
 }
 
-// linear search in players list by number
-// return index of found element
-// or -1 if not found
-int get_player_index_by_num(const Player * p_list, const int count, const unsigned short num) {
+/*
+linear search account by login
+return index in @a_list
+or -1 if not found
+*/
+int get_account_index(const Account* a_list, const int count, const char* key_login) {
+	int i = 0;
+	int res = 0;
 
-	for (int i = 0; i < count; i++) {
-		int res = p_list[i].number - num;
+	for (i = 0; i < count; i++) {
+		res = strcmp(a_list[i].login, key_login);
 		if (0 == res) return i;
 	}
 	return -1;
 }
 
-// linear search in players list by surname
-// return index of found element
-// or -1 if not found
-int get_player_index_by_surname(const Player * p_list, const int count, const char * surname) {
-
-	for (int i = 0; i < count; i++) {
-		int res = strcmp(p_list[i].name.surname, surname);
-		if (0 == res) return i;
-	}
-	return -1;
-}
-
-// get condition for search
-// return array of indexes of occurences
-// need to free result pointer
-// @occ_count - count of occurences
-// if no occurences, occ_count = 0, return null
+/*
+get search mode and key from input
+find all occurences
+select one from all occurences by input
+return index of element
+return -1 if not found
+*/
 int search_one_player(const Player * p_list, const long count) {
 	int occ_count = 0;
 	int* occ_indices = search_all_matching_players(p_list, count, &occ_count);
 
 	int res = -1;
 
-	// TODO: test for case when occ_count uninitialized
-	// only one occurence
+	// if only one occurence
 	if (occ_count == 1) {
 		res = occ_indices[0];
 	}
@@ -111,6 +95,7 @@ int search_one_player(const Player * p_list, const long count) {
 		return -1;
 	}
 
+	// print found player
 	printf("\n\n     %d %s %c. %c.\n",
 		p_list[res].number, p_list[res].name.surname, p_list[res].name.name[0], p_list[res].name.patronym[0]);
 
@@ -120,11 +105,15 @@ int search_one_player(const Player * p_list, const long count) {
 
 // TODO: return occ_count and occ_indices in arguments
 
-// search all occurences
-// count of occurences saved to occ_count
-// return array of all indices in p_list that match
-// return NULL if no matching players
-// result allocated, need to be freed!
+/*
+get search mode from input
+get key for search from input
+get list of indexes of matching elements in @p_list
+print all matching elements
+return list of indexes 
+return null if not found
+result need to be freed
+*/
 int* search_all_matching_players(const Player * p_list, const long count, int* occ_count) {
 	char mode = 'q';
 	int* occ_indices;
@@ -145,7 +134,7 @@ int* search_all_matching_players(const Player * p_list, const long count, int* o
 		else if ('s' == mode) {
 			printf("Surname: ");
 			char surname[NAME_LENGTH];
-			scanf_s("%s", surname, NAME_LENGTH);
+			read_str(surname, NAME_LENGTH);
 			occ_indices = get_players_indexes_by_surname(p_list, count, surname, occ_count);
 		}
 
@@ -176,7 +165,10 @@ int* search_all_matching_players(const Player * p_list, const long count, int* o
 	return occ_indices;
 }
 
-//returns 'n', 's' or 'q'
+/*
+get search mode from input
+returns 'n', 's' or 'q'
+*/
 char get_search_mode(void)
 {
 	char mode;
@@ -188,15 +180,18 @@ char get_search_mode(void)
 	return mode;
 }
 
-// linear search in players list by number
-// return array of indexes of occurences
-// need to free result pointer
-// @occ_count - count of occurences
-// if no occurences, occ_count = 0, return null
+/* 
+linear search in players list by number
+return array of indexes of occurences in @p_list
+need to free result pointer
+@occ_count - count of occurences
+if no occurences, occ_count = 0, return null
+result need to be freed
+*/
 int* get_players_indexes_by_num(const Player * p_list, const int players_count, const unsigned short num, int* occ_count) {
 
 	// temporary array for saving occurences
-	// all elements false until key_num found at that position
+	// all elements false until key num found at that position
 	bool* occ_tmp = (bool*)calloc(players_count, sizeof(int));
 	for (int i = 0; i < players_count; i++) {
 		occ_tmp[i] = false;
@@ -208,13 +203,13 @@ int* get_players_indexes_by_num(const Player * p_list, const int players_count, 
 	// find all occurences
 	for (int i = 0; i < players_count; i++) {
 		int res = p_list[i].number - num;
-		if (0 == res) {
+		if (0 == res) { /* if p_list[i] matches key */
 			occ_tmp[i] = true;
 			(*occ_count)++;
 		}
 	}
 
-	// if no oiccurences, return null
+	// if no occurences, return null
 	if (0 == *occ_count) return NULL;
 
 	int* occ_indices = (int*)calloc(*occ_count, sizeof(int));
@@ -231,15 +226,18 @@ int* get_players_indexes_by_num(const Player * p_list, const int players_count, 
 	return occ_indices;
 }
 
-// linear search in players list by surname
-// return array of indexes of occurences
-// need to free result pointer
-// @occ_count - count of occurences
-// if no occurences, occ_count = 0, return null
+/*
+linear search in players list by surname
+return array of indexes of occurences in @p_list
+need to free result pointer
+@occ_count - count of occurences
+if no occurences, occ_count = 0, return null
+result need to be freed
+*/
 int* get_players_indexes_by_surname(const Player * p_list, const int players_count, const char* surname, int* occ_count) {
 
 	// temporary array for saving occurences
-	// all elements false until key_num found at that position
+	// all elements false until key surname found at that position
 	bool* occ_tmp = (bool*)calloc(players_count, sizeof(int));
 	for (int i = 0; i < players_count; i++) {
 		occ_tmp[i] = false;
@@ -251,13 +249,13 @@ int* get_players_indexes_by_surname(const Player * p_list, const int players_cou
 	// find all occurences
 	for (int i = 0; i < players_count; i++) {
 		int res = strcmp(p_list[i].name.surname, surname);
-		if (0 == res) {
+		if (0 == res) { /* if p_list[i] matches key */
 			occ_tmp[i] = true;
 			(*occ_count)++;
 		}
 	}
 
-	// if no oiccurences, return null
+	// if no occurences, return null
 	if (0 == *occ_count) return NULL;
 
 	int* occ_indices = (int*)calloc(*occ_count, sizeof(int));
