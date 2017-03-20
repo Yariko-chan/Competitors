@@ -25,13 +25,11 @@ void add_player(void) {
 }
 
 void view_players_list(void) {
-	Player* p_list;
-	int count;
-
-	p_list = get_players_list(&count);
+	Player* p_list = NULL; /* to have no errors with junk in the memory*/
+	int count = get_players_list(&p_list);
 	display_players_list(p_list, count);
 
-	if (0 == count) return;
+	if (0 == count || NULL == p_list) return;
 	char choice;
 	do {
 		print_view_menu();
@@ -52,12 +50,10 @@ void view_players_list(void) {
 
 void delete_player(void)
 {
-	Player * p_list;
-	int count;
-
 	puts("\n          *DELETE PLAYER*\n");
-	p_list = get_players_list(&count);
-	if (NULL == p_list) {
+	Player * p_list = NULL; /* to have no errors with junk in the memory*/
+	int count = get_players_list(&p_list);
+	if (count == 0 || NULL == p_list) {
 		// free(a_list) - already free
 		puts("No player in list");
 		return;
@@ -81,12 +77,11 @@ void delete_player(void)
 
 void edit_player(void)
 {
-	Player * p_list;
-	int count;
 
 	puts("\n           *EDIT PLAYER*\n");
-	p_list = get_players_list(&count);
-	if (NULL == p_list) {
+	Player * p_list = NULL; /* to have no errors with junk in the memory*/
+	int count = get_players_list(&p_list);
+	if (0 == count || NULL == p_list) {
 		// free(p_list) - already free
 		puts("No player in list");
 		return;
@@ -126,8 +121,8 @@ void filter_players(const Player* p_list, const int count) {
 }
 
 void search(const Player* p_list, const int count) {
-	int f_count; // just to match arguments
-	search_all_matching_players(p_list, count, &f_count);
+	int* f_list; // just to match arguments
+	search_all_matching_players(p_list, count, &f_list);
 }
 
 void sort_players_list(Player* p_list, const int p_count) {

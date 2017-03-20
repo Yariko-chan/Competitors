@@ -31,14 +31,12 @@ void manage_accounts(void) {
 }
 
 void view_accounts_list(void) {
-	Account* a;
-	int count;
-
-	a = get_accounts_list(&count);
-	display_accounts_list(a, count);
+	Account* a_list = NULL; /* to have no errors with junk in the memory*/
+	int count = get_accounts_list(&a_list);
+	display_accounts_list(a_list, count);
 
 	//free allocated array
-	free(a);
+	free(a_list);
 }
 
 /*
@@ -51,10 +49,10 @@ void add_account(void) {
 	Account new_a = input_account();
 
 	// get accounts list
-	int a_count = 0;
-	Account* a_list = get_accounts_list(&a_count);
+	Account* a_list = NULL; /* to have no errors with junk in the memory*/
+	int a_count = get_accounts_list(&a_list);
 
-	if (0 == a_count) { /* if list void add new */
+	if (0 == a_count || NULL == a_list) { /* if list void - add new */
 		add_new_account(new_a);
 		free(a_list);
 		return;
@@ -98,13 +96,12 @@ void add_new_account(Account new_a) {
 
 void delete_account(void)
 {
-	Account * a_list;
-	int count;
 
 	// search account in list
 	puts("\nEnter login of account to delete.");
-	a_list = get_accounts_list(&count);
-	if (NULL == a_list) {
+	Account * a_list = NULL; /* to have no errors with junk in the memory*/
+	int count = get_accounts_list(&a_list);
+	if (0 == count || NULL == a_list) {
 		// free(a_list);
 		// already free
 		return;
@@ -130,9 +127,9 @@ void change_account_pass(void) {
 
 	// search account
 	puts("\nEnter login of account to change.");
-	int count;
-	Account * a_list = get_accounts_list(&count);
-	if (NULL == a_list) {
+	Account * a_list = NULL; /* to have no errors with junk in the memory*/
+	int count = get_accounts_list(&a_list);
+	if (0 == count || NULL == a_list) {
 		// free(a_list) - already free
 		return;
 	} /* input login, search account */

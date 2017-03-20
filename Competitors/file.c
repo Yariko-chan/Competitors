@@ -119,37 +119,37 @@ void save_players_changes(const Player * p_list, const int count) {
 }
 
 /*
- return pointer to list of accounts from file
- return NULL if file void
- allocates memory, need to free!
+allocate memory and save accounts to @a_list
+@a_list need to be free after use
+if void, @a_list = NULL, return 0
  */
-Account* get_accounts_list(int* count) {
+int get_accounts_list(Account** a_list) {
 	FILE* fp;
-	Account* a_list;
+	int count = 0;
 	size_t readed = 0;
+	*a_list = NULL; /* initiaize anyway */
 
 	open_file(&fp, ACCOUNTS_FILE_NAME, "rb");
 
-	// get count of contracts in file
+	// get count of accounts in file
 	fseek(fp, 0L, SEEK_END);
-	*count = ftell(fp) / sizeof(Account);
-	if (0 == *count) {
-		close_file(fp);
-		return NULL;
-	}
-	rewind(fp);
+	count = ftell(fp) / sizeof(Account);
 
-	a_list = (Account*)calloc(*count, sizeof(Account));
+	if (0 != count) {
+		rewind(fp);
+		*a_list = (Account*)calloc(count, sizeof(Account));
 
-	readed = fread_s(a_list,
-		(long)(*count) * sizeof(Account), sizeof(Account), *count, fp);
-	if (readed != *count) {
-		errno = EILSEQ;
-		error(ERR_FILE_CORRUPTED, false);
+		// copy accounts to @a_list
+		readed = fread_s(*a_list,
+			count * sizeof(Account), sizeof(Account), count, fp);
+		if (readed != count) {
+			errno = EILSEQ;
+			error(ERR_FILE_CORRUPTED, false);
+		}
 	}
 
 	close_file(fp);
-	return a_list;
+	return count;
 }
 
 /*
@@ -157,33 +157,33 @@ return pointer to list of players from file
 return NULL if file void
 allocates memory, need to free!
 */
-Player* get_players_list(int* count) {
+int get_players_list(Player** p_list) {
 	FILE* fp;
-	Player* p_list;
 	size_t readed = 0;
+	int count = 0;
+	*p_list = NULL;
 
 	open_file(&fp, PLAYERS_FILE_NAME, "rb");
 
-	// get count of contracts in file
+	// get count of players in file
 	fseek(fp, 0L, SEEK_END);
-	*count = ftell(fp) / sizeof(Player);
-	if (0 == *count) {
-		close_file(fp);
-		return NULL;
+	count = ftell(fp) / sizeof(Player);
+	if (0 != count) {
+		rewind(fp);
+
+		*p_list = (Player*)calloc(count, sizeof(Player));
+
+		// write players to @p_list
+		readed = fread_s(*p_list,
+			count * sizeof(Player), sizeof(Player), count, fp);
+		if (readed != count) {
+			errno = EILSEQ;
+			error(ERR_FILE_CORRUPTED, false);
+		}
 	}
-	rewind(fp);
-
-	p_list = (Player*)calloc(*count, sizeof(Player));
-
-	readed = fread_s(p_list,
-		(long)(*count) * sizeof(Player), sizeof(Player), (*count), fp);
-	if (readed != *count) {
-		errno = EILSEQ;
-		error(ERR_FILE_CORRUPTED, false);
-	}
-
+	
 	close_file(fp);
-	return p_list;
+	return count;
 }
 
 /*
@@ -194,9 +194,9 @@ Player* get_players_list(int* count) {
 void get_pass_from_account(const char* login, char* pass) {
 
 	// get list of all accounts
-	int count = 0;
-	Account* a_list = get_accounts_list(&count);
-	if (0 == count) { /* if list void throw error and exit */
+	Account* a_list = NULL; /* to have no errors with junk in the memory*/
+	int count = get_accounts_list(&a_list);
+	if (0 == count || NULL == a_list) { /* if list void, throw error and exit */
 		errno = EINTR;
 		error("Accounts list empty. ", true);
 	}

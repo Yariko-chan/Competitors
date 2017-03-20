@@ -11,8 +11,8 @@
  void save_accounts_changes(Account* a_list, int count);
  void save_players_changes(const Player* p_list, const int count);
 
- Account* get_accounts_list(int* count);
- Player* get_players_list(int* count);
+ int get_accounts_list(Account** a_list);
+ int get_players_list(Player** p_list);
 
  void get_pass_from_account(const char* login, char* pass);
 
