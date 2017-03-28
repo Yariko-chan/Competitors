@@ -9,7 +9,7 @@
  void init_players_file(void);
 
  void save_accounts_changes(Account* a_list, int count);
- void save_players_changes(const Player* p_list, const int count);
+ void save_players_changes(Player* p_list, const int count);
 
  int get_accounts_list(Account** a_list);
  int get_players_list(Player** p_list);

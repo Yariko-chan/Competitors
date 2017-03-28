@@ -111,6 +111,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="crypto.c" />
     <ClCompile Include="file.c" />
     <ClCompile Include="filter.c" />
     <ClCompile Include="input.c" />
@@ -123,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
+    <ClInclude Include="crypto.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="filter.h" />
     <ClInclude Include="input.h" />

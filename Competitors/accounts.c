@@ -53,7 +53,7 @@ void add_account(void) {
 	int a_count = get_accounts_list(&a_list);
 
 	if (0 == a_count || NULL == a_list) { /* if list void - add new */
-		add_new_account(new_a);
+		add_new_account(a_list, a_count, new_a);
 		free(a_list);
 		return;
 	}
@@ -74,24 +74,16 @@ void add_account(void) {
 		}
 	}
 	else { /* account not found, add_new */
-		add_new_account(new_a);
+		add_new_account(a_list, a_count, new_a);
 	}
 	free(a_list);
 }
 
 // writes new account to end of auth file
-void add_new_account(Account new_a) {
-	FILE* fp;
-	open_file(&fp, ACCOUNTS_FILE_NAME, "ab");
-	int writed_count = fwrite(&new_a, sizeof(Account), 1, fp);
-	if (1 == writed_count) {
-		puts("Account successfully added.");
-	}
-	else {
-		printf("Error occured, account [%s] wasn't saved",
-			new_a.login);
-	}
-	close_file(fp);
+void add_new_account(Account* a_list, int a_count, Account a_new) {
+	a_list = realloc(a_list, ++a_count * sizeof(Account));
+	a_list[a_count - 1] = a_new;
+	save_accounts_changes(a_list, a_count);
 }
 
 void delete_account(void)

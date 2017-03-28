@@ -9,6 +9,7 @@
 #include "file.h"
 #include "accounts.h"
 #include "players.h"
+#include "crypto.h"
 
 // 1 - admin, 0 - user(default)
 int g_account = 0;

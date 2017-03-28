@@ -8,20 +8,17 @@
 #include "sort.h"
 
 void add_player(void) {
-	FILE * fp;
-	Player new_p = input_player();
-	open_file(&fp, PLAYERS_FILE_NAME, "ab");
+	Player p_new = input_player();
 
-	// save player
-	int writed_count = fwrite(&new_p, sizeof(Player), 1, fp);
-	if (1 == writed_count) {
-		puts("Player successfully added.");
-	}
-	else {
-		printf("Error occured, player [%s %s] wasn't saved", new_p.name.name, new_p.name.surname);
-	}
-
-	close_file(fp);
+	// this code can be replaced by adding new player to the end of file
+	// but because of crypting algorithm data should be encrypted integrated
+	// TODO: may be some improvement in encrypting function
+	// so it can encrypt from last used char in key, not only from beginning
+	Player* p_list;
+	int p_count = get_players_list(&p_list);
+	p_list = realloc(p_list, ++p_count*sizeof(Player));
+	p_list[p_count - 1] = p_new;
+	save_players_changes(p_list, p_count);
 }
 
 void view_players_list(void) {

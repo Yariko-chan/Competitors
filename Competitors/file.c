@@ -8,6 +8,7 @@
 #include "input.h"
 #include "file.h"
 #include "search.h"
+#include "crypto.h"
 
 const int SUCCESS = 0;
 
@@ -92,6 +93,8 @@ void save_accounts_changes(Account * a_list, int count) {
 	FILE* fp;
 	size_t writed_count;
 
+	encrypt((char*) a_list, count*sizeof(Account));
+
 	open_file(&fp, ACCOUNTS_FILE_NAME, "wb");
 	writed_count = fwrite(a_list, sizeof(Account), count, fp);
 	if (count == writed_count)
@@ -104,10 +107,11 @@ void save_accounts_changes(Account * a_list, int count) {
 /*
 rewrite players file with new data
 */
-void save_players_changes(const Player * p_list, const int count) {
+void save_players_changes(Player * p_list, const int count) {
 	FILE* fp;
 	size_t writed_count;
 
+	encrypt(p_list, count * sizeof(Player));
 	open_file(&fp, PLAYERS_FILE_NAME, "wb");
 
 	writed_count = fwrite(p_list, sizeof(Player), count, fp);
@@ -146,6 +150,8 @@ int get_accounts_list(Account** a_list) {
 			errno = EILSEQ;
 			error(ERR_FILE_CORRUPTED, false);
 		}
+
+		decrypt(*a_list, count * sizeof(Account));
 	}
 
 	close_file(fp);
@@ -180,9 +186,11 @@ int get_players_list(Player** p_list) {
 			errno = EILSEQ;
 			error(ERR_FILE_CORRUPTED, false);
 		}
+
 	}
 	
 	close_file(fp);
+	decrypt(*p_list, count * sizeof(Player));
 	return count;
 }
 
