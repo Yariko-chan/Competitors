@@ -52,10 +52,10 @@ Player input_player() {
 
 	puts("\nEnter data for new player:");
 
-	printf("%11s: ", "Name");
-	read_str(new_p.name.name, NAME_LENGTH);
 	printf("%11s: ", "Surname");
 	read_str(new_p.name.surname, NAME_LENGTH);
+	printf("%11s: ", "Name");
+	read_str(new_p.name.name, NAME_LENGTH);
 	printf("%11s: ", "Patronymic");
 	read_str(new_p.name.patronym, NAME_LENGTH);
 	
@@ -262,13 +262,6 @@ char input_gender(void) {
 		}
 	}
 	return res;
-}
-
-bool is_char_sign(const char c) {
-	if (c == '>' || c == '<' || c == '=') {
-		return true;
-	}
-	return false;
 }
 
 //returns first letter from input

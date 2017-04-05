@@ -8,7 +8,7 @@
  void init_accounts_file(void);
  void init_players_file(void);
 
- void save_accounts_changes(Account* a_list, int count);
+ void save_accounts_changes(Account* a_list, const int count);
  void save_players_changes(Player* p_list, const int count);
 
  int get_accounts_list(Account** a_list);
@@ -18,4 +18,6 @@
 
  void open_file(FILE** fp, const char* file_name, const char* mode);
  void close_file(FILE* fp);
- void error(const char* message, const _Bool critical);
+
+ void encrypt(char* sourse, const size_t size);
+ void decrypt(char* sourse, const size_t size);

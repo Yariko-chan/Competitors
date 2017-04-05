@@ -111,7 +111,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="crypto.c" />
     <ClCompile Include="file.c" />
     <ClCompile Include="filter.c" />
     <ClCompile Include="input.c" />
@@ -121,10 +120,10 @@
     <ClCompile Include="search.c" />
     <ClCompile Include="accounts.c" />
     <ClCompile Include="sort.c" />
+    <ClCompile Include="utils.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
-    <ClInclude Include="crypto.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="filter.h" />
     <ClInclude Include="input.h" />
@@ -134,6 +133,7 @@
     <ClInclude Include="search.h" />
     <ClInclude Include="accounts.h" />
     <ClInclude Include="sort.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -14,5 +14,4 @@ void display_players_list(const Player* a, const int count);
 
 void print_count_hyphen(const int count);
 
-void display_filter_set(FilterSet set); 
-char get_char_sign(char sign);
+void display_filter_set(FilterSet set);

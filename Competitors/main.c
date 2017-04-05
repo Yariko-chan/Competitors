@@ -9,12 +9,12 @@
 #include "file.h"
 #include "accounts.h"
 #include "players.h"
-#include "crypto.h"
 
 // 1 - admin, 0 - user(default)
 int g_account = 0;
 
 int main(void) {
+
 	char choice = ' ';
 
 	init_accounts_file();
@@ -35,7 +35,7 @@ int main(void) {
 void sign_in(void) {
 	const int STR_EQUALS = 0;
 
-	char login[LOGIN_LENGTH]; /* +1 for '/0' */
+	char login[LOGIN_LENGTH];
 	char correct_pass[PASSWORD_LENGTH];
 	char entered_pass[PASSWORD_LENGTH];
 

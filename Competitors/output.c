@@ -183,12 +183,3 @@ void display_filter_set(FilterSet set) {
 	}
 	printf("%*s: %s\n", pad, "gender", gender);
 }
-
-char get_char_sign(char sign) {
-	switch (sign) {
-	case -1: return '<';
-	case  1: return '>';
-	case  0: return '=';
-	default: return '?';
-	}
-}

@@ -1,14 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <errno.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "constants.h"
 #include "input.h"
 #include "file.h"
 #include "search.h"
-#include "crypto.h"
+#include "utils.h"
 
 const int SUCCESS = 0;
 
@@ -89,7 +86,7 @@ void init_players_file(void) {
 /*
 rewrite auth file with new data
 */
-void save_accounts_changes(Account * a_list, int count) {
+void save_accounts_changes(Account * a_list, const int count) {
 	FILE* fp;
 	size_t writed_count;
 
@@ -251,16 +248,30 @@ void close_file(FILE* fp) {
 }
 
 /*
-handling error
-print @message to stderr
-exit if error @critical for program
+encrypts @sourse with xor-encryption
+key is string used in get_key_char()
+@size - size of @sourse in bytes
 */
-void error(const char* message, const _Bool critical) {
-	perror(message);
-	if (critical) {
-		fprintf(stderr, ERR_EXIT_CONFIRM);
-		clean_stdin();
-		getchar();
-		exit(EXIT_FAILURE);
+void encrypt(char* sourse, const size_t size) {
+
+	// set to zero
+	//sourse[0] = sourse[0] ^ get_key_char(true);
+	//for (int i = 1; i < (int) size; i++) {
+	//	sourse[i] = sourse[i] ^ get_key_char(false);
+	//}
+	for (int i = 0; i < (int)size; i++) {
+		sourse[i] = sourse[i] ^ ADM_PASSW[i % strlen(ADM_PASSW)];
 	}
+}
+
+/*
+decrypts @sourse with xor-encryption
+key is string used in get_key_char()
+@size - size of @sourse in bytes
+*/
+void decrypt(char* sourse, const size_t size) {
+
+	// same as encrypt, but to functions to make it clear
+	// and also for have opportunity to use other encryption later
+	encrypt(sourse, size);
 }

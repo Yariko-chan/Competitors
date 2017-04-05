@@ -68,14 +68,6 @@ bool fit_condition(const short n, const Condition c) {
 	return sign(n - c.value) == c.sign;
 }
 
-/*
-function for checking sign of number
-return 0 if 0; -1 if negative; +1 if positive
-*/
-int sign(const int x) {
-	return (x > 0) - (x < 0);
-}
-
 bool is_void_condition(const Condition c) {
 	if (c.sign == SIGN_DFLT || c.value < 0) {
 		return true;

@@ -24,5 +24,3 @@ FilterSet input_filter_set(void);
 Condition input_condition(void);
 char input_gender(void);
 char input_sort_mode(void);
-
-bool is_char_sign(const char c);

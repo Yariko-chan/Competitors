@@ -89,8 +89,8 @@ void edit_player(void)
 	if (-1 < i) {
 		puts("Enter new values or press Enter to skip.\n");
 		clean_stdin();
-		edit_str(p_list[i].name.name, "Name", NAME_LENGTH);
 		edit_str(p_list[i].name.surname, "Surname", NAME_LENGTH);
+		edit_str(p_list[i].name.name, "Name", NAME_LENGTH);
 		edit_str(p_list[i].name.patronym, "Patronymic", NAME_LENGTH);
 		
 		edit_short(&p_list[i].number, "Number");
@@ -133,5 +133,4 @@ void sort_players_list(Player* p_list, const int p_count) {
 	sort_by_mode(p_list, p_count, mode);
 
 	display_players_list(p_list, p_count);
-	save_players_changes(p_list, p_count);
 }
