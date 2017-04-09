@@ -144,7 +144,7 @@ int search_all_matching_players(const Player * p_list, const long count, int** o
 			{
 				//if don't want, exit
 				//else start while loop again
-				// free(occ_indices) - no need
+				free(occ_indices);
 				return 0;
 			}
 
@@ -231,21 +231,20 @@ save to @occ_indices array of indices of occurences in @p_list
 @occ_indices nedd to be free after use
 if no occurences, occ_indices = NULL, return 0
 */
-int get_players_indexes_by_surname(const Player * p_list, const int players_count, const char* surname, int** occ_indices) {
+int get_players_indexes_by_surname(const Player * p_list, const int p_count , const char* surname, int** occ_indices) {
 
 	// temporary array for saving occurences
 	// all elements false until key num found at that position
-	bool* occ_tmp = (bool*)calloc(players_count, sizeof(int));
-	for (int i = 0; i < players_count; i++) {
+	bool* occ_tmp = (bool*)calloc(p_count, sizeof(int));
+	for (int i = 0; i < p_count; i++) {
 		occ_tmp[i] = false;
 	}
 
-	// default values
+	// default value
 	int occ_count = 0;
-	*occ_indices = NULL; /* to have no errors with junk in the memory*/
 
-						 // find all occurences
-	for (int i = 0; i < players_count; i++) {
+	// find all occurences
+	for (int i = 0; i < p_count; i++) {
 		int res = strcmp(p_list[i].name.surname, surname);
 		if (0 == res) { /* if p_list[i] matches key */
 			occ_tmp[i] = true;
@@ -254,10 +253,11 @@ int get_players_indexes_by_surname(const Player * p_list, const int players_coun
 	}
 
 	// create int array of indices
+	*occ_indices = NULL; /* to have no errors with junk in the memory*/
 	if (0 != occ_count) {
 		*occ_indices = (int*)calloc(occ_count, sizeof(int));
 		int j = 0;
-		for (int i = 0; i < players_count && j < occ_count; i++) {
+		for (int i = 0; i < p_count && j < occ_count; i++) {
 			if (occ_tmp[i]) {
 				// save index of true element to result array
 				(*occ_indices)[j] = i;

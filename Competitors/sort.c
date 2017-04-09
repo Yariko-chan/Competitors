@@ -34,8 +34,10 @@ void sort_by_mode(Player* p_list, const int count, const char mode) {
 		puts("Sort by number");
 		qsort(p_list, count, sizeof(Player), compare_gender);
 		break;
+	default:
+		puts("No such sort mode"); 
+		break;
 	}
-
 	
 }
 

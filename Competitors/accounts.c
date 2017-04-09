@@ -94,8 +94,7 @@ void delete_account(void)
 	Account * a_list = NULL; /* to have no errors with junk in the memory*/
 	int count = get_accounts_list(&a_list);
 	if (0 == count || NULL == a_list) {
-		// free(a_list);
-		// already free
+		free(a_list);
 		return;
 	}
 	int i = search_account(a_list, count);
@@ -122,7 +121,7 @@ void change_account_pass(void) {
 	Account * a_list = NULL; /* to have no errors with junk in the memory*/
 	int count = get_accounts_list(&a_list);
 	if (0 == count || NULL == a_list) {
-		// free(a_list) - already free
+		free(a_list);
 		return;
 	} /* input login, search account */
 	int i = search_account(a_list, count);

@@ -39,35 +39,31 @@ void sign_in(void) {
 	char correct_pass[PASSWORD_LENGTH];
 	char entered_pass[PASSWORD_LENGTH];
 
-	// TODO: rewrite with no break-continue-while(true)
-
 	// get existing login
+	bool is_existing_login = false;
 	do {
 		printf("%8s: ", "Login");
 		read_str(login, LOGIN_LENGTH);
 		get_pass_from_account(login, correct_pass);
-		if (strlen(correct_pass) != 0) {
-			break;
-		}
-		else {
+		is_existing_login = (strlen(correct_pass) != 0);
+		if (!is_existing_login) {
 			if (!ask_confirm("No such account. Try again?"))
 				exit(EXIT_SUCCESS);
 		}
-	} while (true);
+	} while (!is_existing_login);
 	
 	// get correct password
+	bool is_pass_true = false;
 	do {
 		printf("%8s: ", "Password");
 		read_str(entered_pass, PASSWORD_LENGTH);
-		if (STR_EQUALS == strcmp(correct_pass, entered_pass)) {
-			break;
-		}
-		else {
+		is_pass_true = (STR_EQUALS == strcmp(correct_pass, entered_pass));
+		if (!is_pass_true) {
 			clean_stdin();
 			if (!ask_confirm("Incorrect password. Try again?")) 
 				exit(EXIT_SUCCESS);
 		}
-	} while (true);
+	} while (!is_pass_true);
 
 	// if account - admin, change role
 	if (STR_EQUALS == strcmp(login, ADM_LOGIN)) {

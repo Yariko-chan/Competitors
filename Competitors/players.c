@@ -51,7 +51,7 @@ void delete_player(void)
 	Player * p_list = NULL; /* to have no errors with junk in the memory*/
 	int count = get_players_list(&p_list);
 	if (count == 0 || NULL == p_list) {
-		// free(a_list) - already free
+		free(p_list);
 		puts("No player in list");
 		return;
 	}
@@ -79,7 +79,7 @@ void edit_player(void)
 	Player * p_list = NULL; /* to have no errors with junk in the memory*/
 	int count = get_players_list(&p_list);
 	if (0 == count || NULL == p_list) {
-		// free(p_list) - already free
+		free(p_list);
 		puts("No player in list");
 		return;
 	}
